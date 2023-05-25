@@ -6,13 +6,28 @@ import { Historic } from "../../libs/realm/schemas/Historic";
 
 import { Container, Content, Label, Title } from "./styles";
 import { Alert, FlatList } from "react-native";
+import { CarStatus } from "../../components/CarStatus";
 
 export function Home() {
   const [vehicleHistoric, setVehicleHistoric] = useState<HistoricCardProps[]>(
     []
   );
+  const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null);
 
   const historic = useQuery(Historic);
+
+  const fetchVehicleInUse = useCallback(() => {
+    try {
+      const vehicle = historic.filtered("status='departure'")[0];
+      setVehicleInUse(vehicle);
+    } catch (error) {
+      Alert.alert(
+        "Veículo em uso",
+        "Não foi possível carregar o veículo em uso."
+      );
+      console.log(error);
+    }
+  }, [historic]);
 
   const fetchHistoric = useCallback(() => {
     try {
@@ -38,11 +53,17 @@ export function Home() {
     fetchHistoric();
   }, []);
 
+  useEffect(() => {
+    fetchVehicleInUse();
+  }, []);
+
   return (
     <Container>
       <HomeHeader />
 
       <Content>
+        <CarStatus licensePlate={vehicleInUse?.license_plate} />
+
         <Title>Histórico</Title>
 
         <FlatList
