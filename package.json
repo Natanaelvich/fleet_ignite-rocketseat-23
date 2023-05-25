@@ -10,9 +10,12 @@
   "dependencies": {
     "@realm/react": "^0.4.3",
     "expo": "~48.0.15",
+    "expo-auth-session": "~4.0.3",
+    "expo-crypto": "~12.2.1",
     "expo-image": "~1.0.1",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
+    "expo-web-browser": "~12.1.1",
     "phosphor-react-native": "^1.1.2",
     "react": "18.2.0",
     "react-native": "0.71.8",
