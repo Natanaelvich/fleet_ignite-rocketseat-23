@@ -7,14 +7,21 @@ import { Historic } from "../../libs/realm/schemas/Historic";
 import { Container, Content, Label, Title } from "./styles";
 import { Alert, FlatList } from "react-native";
 import { CarStatus } from "../../components/CarStatus";
+import { useNavigation } from "@react-navigation/native";
 
 export function Home() {
+  const { navigate } = useNavigation();
+
   const [vehicleHistoric, setVehicleHistoric] = useState<HistoricCardProps[]>(
     []
   );
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null);
 
   const historic = useQuery(Historic);
+
+  function handleRegisterMoviment() {
+    navigate("departure");
+  }
 
   const fetchVehicleInUse = useCallback(() => {
     try {
@@ -62,7 +69,10 @@ export function Home() {
       <HomeHeader />
 
       <Content>
-        <CarStatus licensePlate={vehicleInUse?.license_plate} />
+        <CarStatus
+          licensePlate={vehicleInUse?.license_plate}
+          onPress={handleRegisterMoviment}
+        />
 
         <Title>Histórico</Title>
 
