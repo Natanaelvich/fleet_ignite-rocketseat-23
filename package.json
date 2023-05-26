@@ -10,6 +10,7 @@
   "dependencies": {
     "@realm/react": "^0.4.3",
     "expo": "~48.0.15",
+    "expo-application": "~5.1.1",
     "expo-auth-session": "~4.0.3",
     "expo-crypto": "~12.2.1",
     "expo-image": "~1.0.1",
