@@ -8,6 +8,7 @@ import { AppProvider, UserProvider } from "@realm/react";
 import { SignIn } from "./src/screens/SignIn";
 
 import { REALM_APP_ID } from "@env";
+import { Routes } from "./src/routes";
 
 export default function App() {
   return (
@@ -21,7 +22,7 @@ export default function App() {
           />
           <UserProvider fallback={SignIn}>
             <RealmProvider>
-              <Home />
+              <Routes />
             </RealmProvider>
           </UserProvider>
         </SafeAreaProvider>
