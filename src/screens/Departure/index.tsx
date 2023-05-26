@@ -5,9 +5,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Button } from "../../components/Button";
 
 import { Container, Content } from "./styles";
-import { Header } from "react-native/Libraries/NewAppScreen";
 import { LicensePlateInput } from "../../components/LicensePlateInput";
 import { TextAreaInput } from "../../components/TextAreaInput";
+import { Header } from "../../components/Header";
 
 export function Departure() {
   const [description, setDescription] = useState("");
