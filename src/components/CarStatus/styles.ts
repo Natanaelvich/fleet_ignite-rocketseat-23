@@ -30,7 +30,7 @@ export const Message = styled.Text`
 
   flex: 1;
   text-align: justify;
-  textalignvertical: center;
+  text-align-vertical: center;
 `
 
 export const TextHighlight = styled.Text`
