@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
 import { HomeHeader } from '../../components/HomeHeader'
-import { useQuery } from '../../libs/realm'
+import { useQuery, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 
 import { Container, Content, Label, Title } from './styles'
@@ -18,6 +18,7 @@ export function Home() {
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
 
   const historic = useQuery(Historic)
+  const realm = useRealm()
 
   function handleRegisterMoviment() {
     if (vehicleInUse?._id) {
@@ -71,6 +72,15 @@ export function Home() {
   useEffect(() => {
     fetchVehicleInUse()
   }, [fetchVehicleInUse])
+
+  useEffect(() => {
+    realm.addListener('change', () => fetchVehicleInUse())
+    return () => {
+      if (realm && !realm.isClosed) {
+        realm.removeListener('change', fetchVehicleInUse)
+      }
+    }
+  }, [fetchVehicleInUse, realm])
 
   return (
     <Container>
