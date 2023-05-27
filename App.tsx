@@ -1,6 +1,12 @@
 import 'react-native-get-random-values'
 
 import { ThemeProvider } from 'styled-components/native'
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_700Bold,
+} from '@expo-google-fonts/roboto'
+
 import theme from './src/theme'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'react-native'
@@ -12,6 +18,15 @@ import { REALM_APP_ID } from '@env'
 import { Routes } from './src/routes'
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_700Bold,
+  })
+
+  if (!fontsLoaded) {
+    return null
+  }
+
   return (
     <AppProvider id={REALM_APP_ID}>
       <ThemeProvider theme={theme}>
