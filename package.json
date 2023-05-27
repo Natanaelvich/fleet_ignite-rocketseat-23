@@ -5,7 +5,9 @@
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx && tsc --noEmit",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix && tsc --noEmit"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.6",
@@ -35,7 +37,8 @@
     "@types/styled-components": "^5.1.26",
     "@types/styled-components-react-native": "^5.2.1",
     "react-native-dotenv": "^3.4.8",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "@rocketseat/eslint-config": "^1.2.0"
   },
   "private": true
 }
