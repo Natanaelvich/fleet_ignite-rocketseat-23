@@ -10,13 +10,17 @@ import { TextAreaInput } from '../../components/TextAreaInput'
 import { Header } from '../../components/Header'
 import { useNavigation } from '@react-navigation/native'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
+import { useRealm } from '../../libs/realm'
+import { Historic } from '../../libs/realm/schemas/Historic'
+import { useUser } from '@realm/react'
 
 export function Departure() {
   const { goBack } = useNavigation()
+  const realm = useRealm()
+  const user = useUser()
 
   const descriptionRef = useRef<TextInput>(null)
   const licensePlateRef = useRef<TextInput>(null)
-
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
@@ -40,6 +44,17 @@ export function Departure() {
       }
 
       setIsResgistering(false)
+
+      realm.write(() => {
+        realm.create(
+          'Historic',
+          Historic.generate({
+            user_id: user!.id,
+            license_plate: licensePlate,
+            description,
+          }),
+        )
+      })
 
       Alert.alert('Saída', 'Saída do veículo registrada com sucesso.')
 
