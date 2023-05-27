@@ -1,14 +1,13 @@
-import { ThemeProvider } from "styled-components/native";
-import theme from "./src/theme";
-import { Home } from "./src/screens/Home";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StatusBar } from "react-native";
-import { RealmProvider } from "./src/libs/realm";
-import { AppProvider, UserProvider } from "@realm/react";
-import { SignIn } from "./src/screens/SignIn";
+import { ThemeProvider } from 'styled-components/native'
+import theme from './src/theme'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { StatusBar } from 'react-native'
+import { RealmProvider } from './src/libs/realm'
+import { AppProvider, UserProvider } from '@realm/react'
+import { SignIn } from './src/screens/SignIn'
 
-import { REALM_APP_ID } from "@env";
-import { Routes } from "./src/routes";
+import { REALM_APP_ID } from '@env'
+import { Routes } from './src/routes'
 
 export default function App() {
   return (
@@ -28,5 +27,5 @@ export default function App() {
         </SafeAreaProvider>
       </ThemeProvider>
     </AppProvider>
-  );
+  )
 }

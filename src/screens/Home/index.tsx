@@ -1,68 +1,68 @@
-import { useCallback, useEffect, useState } from "react";
-import { HistoricCard, HistoricCardProps } from "../../components/HistoricCard";
-import { HomeHeader } from "../../components/HomeHeader";
-import { useQuery } from "../../libs/realm";
-import { Historic } from "../../libs/realm/schemas/Historic";
+import { useCallback, useEffect, useState } from 'react'
+import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
+import { HomeHeader } from '../../components/HomeHeader'
+import { useQuery } from '../../libs/realm'
+import { Historic } from '../../libs/realm/schemas/Historic'
 
-import { Container, Content, Label, Title } from "./styles";
-import { Alert, FlatList } from "react-native";
-import { CarStatus } from "../../components/CarStatus";
-import { useNavigation } from "@react-navigation/native";
+import { Container, Content, Label, Title } from './styles'
+import { Alert, FlatList } from 'react-native'
+import { CarStatus } from '../../components/CarStatus'
+import { useNavigation } from '@react-navigation/native'
 
 export function Home() {
-  const { navigate } = useNavigation();
+  const { navigate } = useNavigation()
 
   const [vehicleHistoric, setVehicleHistoric] = useState<HistoricCardProps[]>(
-    []
-  );
-  const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null);
+    [],
+  )
+  const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
 
-  const historic = useQuery(Historic);
+  const historic = useQuery(Historic)
 
   function handleRegisterMoviment() {
-    navigate("departure");
+    navigate('departure')
   }
 
   const fetchVehicleInUse = useCallback(() => {
     try {
-      const vehicle = historic.filtered("status='departure'")[0];
-      setVehicleInUse(vehicle);
+      const vehicle = historic.filtered("status='departure'")[0]
+      setVehicleInUse(vehicle)
     } catch (error) {
       Alert.alert(
-        "Veículo em uso",
-        "Não foi possível carregar o veículo em uso."
-      );
-      console.log(error);
+        'Veículo em uso',
+        'Não foi possível carregar o veículo em uso.',
+      )
+      console.log(error)
     }
-  }, [historic]);
+  }, [historic])
 
   const fetchHistoric = useCallback(() => {
     try {
       const response = historic.filtered(
-        "status='arrival' SORT(created_at DESC)"
-      );
+        "status='arrival' SORT(created_at DESC)",
+      )
       const formattedHistoric = response.map((item) => {
         return {
           id: item._id.toString(),
           licensePlate: item.license_plate,
           isSync: false,
           created: item.created_at.toString(),
-        };
-      });
-      setVehicleHistoric(formattedHistoric);
+        }
+      })
+      setVehicleHistoric(formattedHistoric)
     } catch (error) {
-      console.log(error);
-      Alert.alert("Histórico", "Não foi possível carregar o histórico.");
+      console.log(error)
+      Alert.alert('Histórico', 'Não foi possível carregar o histórico.')
     }
-  }, [historic]);
+  }, [historic])
 
   useEffect(() => {
-    fetchHistoric();
-  }, []);
+    fetchHistoric()
+  }, [fetchHistoric])
 
   useEffect(() => {
-    fetchVehicleInUse();
-  }, []);
+    fetchVehicleInUse()
+  }, [fetchVehicleInUse])
 
   return (
     <Container>
@@ -86,5 +86,5 @@ export function Home() {
         />
       </Content>
     </Container>
-  );
+  )
 }

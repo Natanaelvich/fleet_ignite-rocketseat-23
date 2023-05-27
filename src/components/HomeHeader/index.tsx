@@ -1,22 +1,22 @@
-import { TouchableOpacity } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TouchableOpacity } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Container, Greeting, Message, Name, Picture } from "./styles";
+import { Container, Greeting, Message, Name, Picture } from './styles'
 
-import theme from "../../theme";
-import { Power } from "phosphor-react-native";
-import { useApp, useUser } from "@realm/react";
+import theme from '../../theme'
+import { Power } from 'phosphor-react-native'
+import { useApp, useUser } from '@realm/react'
 
 export function HomeHeader() {
-  const user = useUser();
-  const app = useApp();
+  const user = useUser()
+  const app = useApp()
 
-  const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets()
 
-  const paddingTop = insets.top + 32;
+  const paddingTop = insets.top + 32
 
   function handleLogOut() {
-    app.currentUser?.logOut();
+    app.currentUser?.logOut()
   }
 
   return (
@@ -35,5 +35,5 @@ export function HomeHeader() {
         <Power size={32} color={theme.COLORS.GRAY_400} />
       </TouchableOpacity>
     </Container>
-  );
+  )
 }
