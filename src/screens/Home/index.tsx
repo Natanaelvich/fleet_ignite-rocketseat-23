@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import dayjs from 'dayjs'
 import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
 import { HomeHeader } from '../../components/HomeHeader'
 import { useQuery, useRealm } from '../../libs/realm'
@@ -55,7 +56,9 @@ export function Home() {
           id: item._id.toString(),
           licensePlate: item.license_plate,
           isSync: false,
-          created: item.created_at.toString(),
+          created: dayjs(item.created_at).format(
+            '[Saída em] DD/MM/YYYY [às] HH:mm',
+          ),
         }
       })
       setVehicleHistoric(formattedHistoric)
