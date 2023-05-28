@@ -9,6 +9,7 @@ import { Container, Content, Label, Title } from './styles'
 import { Alert, FlatList } from 'react-native'
 import { CarStatus } from '../../components/CarStatus'
 import { useNavigation } from '@react-navigation/native'
+import { useUser } from '@realm/react'
 
 export function Home() {
   const { navigate } = useNavigation()
@@ -20,6 +21,7 @@ export function Home() {
 
   const historic = useQuery(Historic)
   const realm = useRealm()
+  const user = useUser()
 
   function handleRegisterMoviment() {
     if (vehicleInUse?._id) {
@@ -84,6 +86,16 @@ export function Home() {
       }
     }
   }, [fetchVehicleInUse, realm])
+
+  useEffect(() => {
+    realm.subscriptions.update((mutableSubs, realm) => {
+      const historicByUserQuery = realm
+        .objects('Historic')
+        .filtered(`user_id = '${user!.id}'`)
+
+      mutableSubs.add(historicByUserQuery, { name: 'hostoric_by_user' })
+    })
+  }, [realm, user])
 
   return (
     <Container>
