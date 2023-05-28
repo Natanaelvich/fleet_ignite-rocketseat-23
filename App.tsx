@@ -10,12 +10,13 @@ import {
 import theme from './src/theme'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { StatusBar } from 'react-native'
-import { RealmProvider } from './src/libs/realm'
+import { RealmProvider, syncConfig } from './src/libs/realm'
 import { AppProvider, UserProvider } from '@realm/react'
 import { SignIn } from './src/screens/SignIn'
 
 import { REALM_APP_ID } from '@env'
 import { Routes } from './src/routes'
+import { Loading } from './src/components/Loading'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -24,7 +25,7 @@ export default function App() {
   })
 
   if (!fontsLoaded) {
-    return null
+    return <Loading />
   }
 
   return (
@@ -37,7 +38,7 @@ export default function App() {
             translucent
           />
           <UserProvider fallback={SignIn}>
-            <RealmProvider>
+            <RealmProvider sync={syncConfig} fallback={Loading}>
               <Routes />
             </RealmProvider>
           </UserProvider>
