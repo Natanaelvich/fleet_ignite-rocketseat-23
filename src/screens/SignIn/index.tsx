@@ -16,11 +16,17 @@ WebBrowser.maybeCompleteAuthSession()
 export function SignIn() {
   const [isAuthenticating, setIsAuthenticating] = useState(false)
 
-  const [, response, googleSignIng] = Google.useAuthRequest({
-    androidClientId: ANDROID_CLIENT_ID,
-    iosClientId: IOS_CLIENT_ID,
-    scopes: ['profile', 'email'],
-  })
+  const [, response, googleSignIng] = Google.useAuthRequest(
+    {
+      androidClientId: ANDROID_CLIENT_ID,
+      iosClientId: IOS_CLIENT_ID,
+      scopes: ['profile', 'email'],
+    },
+    {
+      scheme: 'com.natanaelvich.fleet',
+      projectNameForProxy: 'fleet',
+    },
+  )
 
   const app = useApp()
 
