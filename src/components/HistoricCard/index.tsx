@@ -1,8 +1,13 @@
-import { TouchableOpacityProps } from 'react-native'
+import { TouchableOpacityProps, ViewToken } from 'react-native'
 
 import { Container, Departure, Info, LicensePlate } from './styles'
 import { Check, ClockClockwise } from 'phosphor-react-native'
 import { useTheme } from 'styled-components/native'
+import {
+  SharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated'
 
 export type HistoricCardProps = {
   id: string
@@ -13,13 +18,27 @@ export type HistoricCardProps = {
 
 type Props = TouchableOpacityProps & {
   data: HistoricCardProps
+  viewableItems: SharedValue<ViewToken[]>
 }
 
-export function HistoricCard({ data, ...rest }: Props) {
+export function HistoricCard({ data, viewableItems, ...rest }: Props) {
   const { COLORS } = useTheme()
 
+  const rStyle = useAnimatedStyle(() => {
+    const isViewable = viewableItems.value.find((item) => item.key === data.id)
+
+    return {
+      opacity: isViewable ? withTiming(1) : withTiming(0),
+      transform: [
+        {
+          translateX: withTiming(isViewable ? 0 : 100),
+        },
+      ],
+    }
+  })
+
   return (
-    <Container activeOpacity={0.7} {...rest}>
+    <Container activeOpacity={0.7} {...rest} style={rStyle}>
       <Info>
         <LicensePlate>{data.licensePlate}</LicensePlate>
 
