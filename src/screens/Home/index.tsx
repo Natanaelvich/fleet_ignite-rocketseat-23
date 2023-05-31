@@ -7,7 +7,7 @@ import { useQuery, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 
 import { Container, Content, Label, Title } from './styles'
-import { Alert, FlatList } from 'react-native'
+import { Alert, FlatList, ViewToken } from 'react-native'
 import { CarStatus } from '../../components/CarStatus'
 import { useNavigation } from '@react-navigation/native'
 import { Realm, useUser } from '@realm/react'
@@ -17,6 +17,7 @@ import {
 } from '../../libs/asyncStorage/syncStorage'
 import { TopMessage } from '../../components/TopMessage'
 import { CloudArrowUp } from 'phosphor-react-native'
+import { useSharedValue } from 'react-native-reanimated'
 
 export function Home() {
   const { navigate } = useNavigation()
@@ -26,6 +27,8 @@ export function Home() {
   )
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
   const [percetageToSync, setPercentageToSync] = useState<string | null>(null)
+
+  const viewableItems = useSharedValue<ViewToken[]>([])
 
   const historic = useQuery(Historic)
   const realm = useRealm()
@@ -171,8 +174,12 @@ export function Home() {
             <HistoricCard
               data={item}
               onPress={() => handleHistoricDetails(item.id)}
+              viewableItems={viewableItems}
             />
           )}
+          onViewableItemsChanged={(info) => {
+            viewableItems.value = info.viewableItems
+          }}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListEmptyComponent={<Label>Nenhum registro de utilização.</Label>}
