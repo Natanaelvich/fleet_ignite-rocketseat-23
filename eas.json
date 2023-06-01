@@ -11,6 +11,9 @@
       "ios": {
         "buildConfiguration": "Debug",
         "resourceClass": "m-medium"
+      },
+      "env": {
+        "APP_VARIANT": "development"
       }
     },
     "preview": {
