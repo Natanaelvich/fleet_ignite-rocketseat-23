@@ -40,7 +40,7 @@ const IS_DEV = process.env.APP_VARIANT === 'development'
 
 export default {
   name: IS_DEV ? 'Fleet Dev' : 'Fleet',
-  slug: IS_DEV ? 'fleet-dev' : 'fleet',
+  slug: 'fleet',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
