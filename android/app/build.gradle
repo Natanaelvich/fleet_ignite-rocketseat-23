@@ -122,6 +122,18 @@ android {
         versionName "1.0.0"
     }
 
+    flavorDimensions "env"
+    productFlavors {
+        production {
+            dimension "env"
+            applicationId 'com.natanaelvich.fleet'
+        }
+        development {
+            dimension "env"
+            applicationId 'com.natanaelvich.fleet-dev'
+        }
+    }
+
     splits {
         abi {
             reset()
