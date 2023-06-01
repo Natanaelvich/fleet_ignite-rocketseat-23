@@ -6,7 +6,7 @@
     "development": {
       "distribution": "internal",
       "android": {
-        "gradleCommand": ":app:assembleDebug"
+        "gradleCommand": ":app:assembleDevelopmentDebug"
       },
       "ios": {
         "buildConfiguration": "Debug",
@@ -25,6 +25,9 @@
     "production": {
       "ios": {
         "resourceClass": "m-medium"
+      },
+      "android": {
+        "gradleCommand": ":app:bundleProductionRelease"
       }
     },
     "staging": {
