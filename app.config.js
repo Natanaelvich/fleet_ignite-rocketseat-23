@@ -64,6 +64,11 @@ export default {
       backgroundColor: '#202024',
     },
     package: IS_DEV ? 'com.natanaelvich.fleet-dev' : 'com.natanaelvich.fleet',
+    config: {
+      googleMaps: {
+        apiKey: process.env.GOOGLE_MAPS_API_KEY,
+      },
+    },
   },
   web: {
     favicon: './assets/favicon.png',
