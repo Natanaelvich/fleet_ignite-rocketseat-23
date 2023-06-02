@@ -57,6 +57,9 @@ export default {
     bundleIdentifier: IS_DEV
       ? 'com.natanaelvich.fleet-dev'
       : 'com.natanaelvich.fleet',
+    config: {
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY_IOS,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -66,7 +69,7 @@ export default {
     package: IS_DEV ? 'com.natanaelvich.fleet-dev' : 'com.natanaelvich.fleet',
     config: {
       googleMaps: {
-        apiKey: process.env.GOOGLE_MAPS_API_KEY,
+        apiKey: process.env.GOOGLE_MAPS_API_KEY_ANDROID,
       },
     },
   },
