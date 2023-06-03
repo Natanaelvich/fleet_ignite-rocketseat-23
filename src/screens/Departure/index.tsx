@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Alert, TextInput, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import * as Location from 'expo-location'
 
 import { Button } from '../../components/Button'
 
@@ -25,7 +26,7 @@ export function Departure() {
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
 
-  function handleDepartureRegister() {
+  async function handleDepartureRegister() {
     try {
       if (!licensePlateValidate(licensePlate)) {
         licensePlateRef.current?.focus()
@@ -42,6 +43,19 @@ export function Departure() {
           'Por favor, informe a finalidade da utilização do veículo',
         )
       }
+
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert(
+          'Erro',
+          'Não foi possível obter a localização do dispositivo.',
+        )
+        return
+      }
+
+      const location = await Location.getCurrentPositionAsync({})
+
+      console.log(location)
 
       setIsResgistering(false)
 
