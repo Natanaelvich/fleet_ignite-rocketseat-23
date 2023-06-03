@@ -28,7 +28,7 @@ export default {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#202024',
     },
-    package: IS_DEV ? 'com.natanaelvich.fleet-dev' : 'com.natanaelvich.fleet',
+    package: IS_DEV ? 'com.natanaelvich.fleetdev' : 'com.natanaelvich.fleet',
     config: {
       googleMaps: {
         apiKey: process.env.GOOGLE_MAPS_API_KEY_ANDROID,

@@ -130,7 +130,7 @@ android {
         }
         development {
             dimension "env"
-            applicationId 'com.natanaelvich.fleet-dev'
+            applicationId 'com.natanaelvich.fleetdev'
         }
     }
 
