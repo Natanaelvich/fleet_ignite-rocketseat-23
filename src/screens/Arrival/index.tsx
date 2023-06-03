@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { X } from 'phosphor-react-native'
+import * as Location from 'expo-location'
 
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
@@ -53,7 +54,7 @@ export function Arrival() {
     goBack()
   }
 
-  function handleArrivalRegister() {
+  async function handleArrivalRegister() {
     try {
       if (!historic) {
         return Alert.alert(
@@ -61,6 +62,19 @@ export function Arrival() {
           'Não foi possível obter os dados para registrar a chegada do veículo.',
         )
       }
+
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert(
+          'Erro',
+          'Não foi possível obter a localização do dispositivo.',
+        )
+        return
+      }
+
+      const location = await Location.getCurrentPositionAsync({})
+
+      console.log(location)
 
       realm.write(() => {
         historic.status = 'arrival'
