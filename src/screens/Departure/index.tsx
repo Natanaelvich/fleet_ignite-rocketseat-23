@@ -1,19 +1,18 @@
+import { useNavigation } from '@react-navigation/native'
+import { useUser } from '@realm/react'
+import * as Location from 'expo-location'
 import { useRef, useState } from 'react'
 import { Alert, TextInput, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import * as Location from 'expo-location'
 
 import { Button } from '../../components/Button'
-
-import { Container, Content } from './styles'
+import { Header } from '../../components/Header'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { TextAreaInput } from '../../components/TextAreaInput'
-import { Header } from '../../components/Header'
-import { useNavigation } from '@react-navigation/native'
-import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
-import { useUser } from '@realm/react'
+import { licensePlateValidate } from '../../utils/licensePlateValidate'
+import { Container, Content } from './styles'
 
 export function Departure() {
   const { goBack } = useNavigation()

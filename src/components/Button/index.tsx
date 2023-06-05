@@ -1,5 +1,6 @@
 import React from 'react'
 import { TouchableOpacityProps } from 'react-native'
+
 import { Container, Loading, Title } from './styles'
 
 type Props = TouchableOpacityProps & {

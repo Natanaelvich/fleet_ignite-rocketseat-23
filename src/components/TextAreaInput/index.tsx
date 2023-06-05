@@ -1,8 +1,8 @@
+import { forwardRef } from 'react'
 import { TextInput, TextInputProps } from 'react-native'
 import { useTheme } from 'styled-components/native'
 
 import { Container, Input, Label } from './styles'
-import { forwardRef } from 'react'
 
 type Props = TextInputProps & {
   label: string

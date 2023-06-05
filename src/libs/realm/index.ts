@@ -1,7 +1,7 @@
 import { createRealmContext } from '@realm/react'
+import { OpenRealmBehaviorConfiguration, OpenRealmBehaviorType } from 'realm'
 
 import { Historic } from './schemas/Historic'
-import { OpenRealmBehaviorConfiguration, OpenRealmBehaviorType } from 'realm'
 
 const realmAccessBehavior: OpenRealmBehaviorConfiguration = {
   type: OpenRealmBehaviorType.OpenImmediately,

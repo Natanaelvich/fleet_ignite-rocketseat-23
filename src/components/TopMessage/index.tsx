@@ -1,9 +1,9 @@
-import React from 'react'
-import { useTheme } from 'styled-components/native'
 import { IconProps } from 'phosphor-react-native'
+import React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTheme } from 'styled-components/native'
 
 import { Container, Title } from './styles'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type IconBoxProps = (props: IconProps) => React.ReactElement
 

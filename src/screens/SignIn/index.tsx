@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
+import { ANDROID_CLIENT_ID, IOS_CLIENT_ID } from '@env'
 import { Realm, useApp } from '@realm/react'
-import * as WebBrowser from 'expo-web-browser'
 import * as Google from 'expo-auth-session/providers/google'
-
-import { Container, Title, Slogan } from './styles'
+import * as WebBrowser from 'expo-web-browser'
+import { useEffect, useState } from 'react'
+import { Alert } from 'react-native'
 
 import backgroundImg from '../../assets/background.png'
 import { Button } from '../../components/Button'
-
-import { ANDROID_CLIENT_ID, IOS_CLIENT_ID } from '@env'
-import { Alert } from 'react-native'
+import { Container, Slogan, Title } from './styles'
 
 WebBrowser.maybeCompleteAuthSession()
 

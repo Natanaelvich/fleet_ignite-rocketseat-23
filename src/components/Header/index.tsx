@@ -1,8 +1,8 @@
-import { TouchableOpacity } from 'react-native'
-import { ArrowLeft } from 'phosphor-react-native'
-import { useTheme } from 'styled-components'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useNavigation } from '@react-navigation/native'
+import { ArrowLeft } from 'phosphor-react-native'
+import { TouchableOpacity } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useTheme } from 'styled-components'
 
 import { Container, Title } from './styles'
 

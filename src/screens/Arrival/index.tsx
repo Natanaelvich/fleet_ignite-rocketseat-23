@@ -1,27 +1,25 @@
+import { useNavigation, useRoute } from '@react-navigation/native'
+import * as Location from 'expo-location'
+import { X } from 'phosphor-react-native'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
-import { useNavigation, useRoute } from '@react-navigation/native'
-import { X } from 'phosphor-react-native'
-import * as Location from 'expo-location'
-
-import { useObject, useRealm } from '../../libs/realm'
-import { Historic } from '../../libs/realm/schemas/Historic'
 import { BSON } from 'realm'
 
+import { Button } from '../../components/Button'
+import { ButtonIcon } from '../../components/ButtonIcon'
+import { Header } from '../../components/Header'
+import { useObject, useRealm } from '../../libs/realm'
+import { Historic } from '../../libs/realm/schemas/Historic'
+import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
 import {
+  AsyncMessage,
   Container,
   Content,
   Description,
   Footer,
   Label,
   LicensePlate,
-  AsyncMessage,
 } from './styles'
-
-import { Header } from '../../components/Header'
-import { Button } from '../../components/Button'
-import { ButtonIcon } from '../../components/ButtonIcon'
-import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
 
 type RouteParamProps = {
   id: string

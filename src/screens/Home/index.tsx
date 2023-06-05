@@ -1,24 +1,23 @@
-import { useCallback, useEffect, useState } from 'react'
-import dayjs from 'dayjs'
-import Toast from 'react-native-toast-message'
-import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
-import { HomeHeader } from '../../components/HomeHeader'
-import { useQuery, useRealm } from '../../libs/realm'
-import { Historic } from '../../libs/realm/schemas/Historic'
-
-import { Container, Content, Label, Title } from './styles'
-import { Alert, FlatList, ViewToken } from 'react-native'
-import { CarStatus } from '../../components/CarStatus'
 import { useNavigation } from '@react-navigation/native'
 import { Realm, useUser } from '@realm/react'
-
-import { TopMessage } from '../../components/TopMessage'
+import dayjs from 'dayjs'
 import { CloudArrowUp } from 'phosphor-react-native'
+import { useCallback, useEffect, useState } from 'react'
+import { Alert, FlatList, ViewToken } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
+import Toast from 'react-native-toast-message'
+
+import { CarStatus } from '../../components/CarStatus'
+import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
+import { HomeHeader } from '../../components/HomeHeader'
+import { TopMessage } from '../../components/TopMessage'
+import { useQuery, useRealm } from '../../libs/realm'
+import { Historic } from '../../libs/realm/schemas/Historic'
 import {
   getLastAsyncTimestamp,
   saveLastSyncTimestamp,
 } from '../../libs/storage/mmkv'
+import { Container, Content, Label, Title } from './styles'
 
 export function Home() {
   const { navigate } = useNavigation()
