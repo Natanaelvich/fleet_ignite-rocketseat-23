@@ -4,7 +4,7 @@ export const storage = new MMKV()
 
 const STORAGE_ASSYNC_KEY = '@ignitefleet:last_sync'
 
-export async function saveLastSyncTimestamp() {
+export function saveLastSyncTimestamp() {
   const timestamp = new Date().getTime()
 
   storage.set(STORAGE_ASSYNC_KEY, timestamp.toString())
@@ -12,7 +12,7 @@ export async function saveLastSyncTimestamp() {
   return timestamp
 }
 
-export async function getLastAsyncTimestamp() {
+export function getLastAsyncTimestamp() {
   const timestamp = storage.getString(STORAGE_ASSYNC_KEY)
 
   return Number(timestamp)
