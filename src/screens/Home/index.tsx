@@ -11,13 +11,14 @@ import { Alert, FlatList, ViewToken } from 'react-native'
 import { CarStatus } from '../../components/CarStatus'
 import { useNavigation } from '@react-navigation/native'
 import { Realm, useUser } from '@realm/react'
-import {
-  getLastAsyncTimestamp,
-  saveLastSyncTimestamp,
-} from '../../libs/asyncStorage/syncStorage'
+
 import { TopMessage } from '../../components/TopMessage'
 import { CloudArrowUp } from 'phosphor-react-native'
 import { useSharedValue } from 'react-native-reanimated'
+import {
+  getLastAsyncTimestamp,
+  saveLastSyncTimestamp,
+} from '../../libs/storage/mmkv'
 
 export function Home() {
   const { navigate } = useNavigation()
@@ -59,13 +60,13 @@ export function Home() {
     }
   }, [historic])
 
-  const fetchHistoric = useCallback(async () => {
+  const fetchHistoric = useCallback(() => {
     try {
       const response = historic.filtered(
         "status='arrival' SORT(created_at DESC)",
       )
 
-      const lastSync = await getLastAsyncTimestamp()
+      const lastSync = getLastAsyncTimestamp()
 
       const formattedHistoric = response.map((item) => {
         return {
@@ -89,8 +90,8 @@ export function Home() {
       const percentage = (transferred / transferable) * 100
 
       if (percentage === 100) {
-        await saveLastSyncTimestamp()
-        await fetchHistoric()
+        saveLastSyncTimestamp()
+        fetchHistoric()
         setPercentageToSync(null)
 
         Toast.show({
