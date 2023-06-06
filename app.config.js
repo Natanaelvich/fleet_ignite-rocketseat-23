@@ -5,11 +5,11 @@ export default {
   slug: 'fleet',
   version: '1.0.0',
   orientation: 'portrait',
-  icon: './assets/icon.png',
+  icon: IS_DEV ? './assets/icon-dev.png' : './assets/icon.png',
   userInterfaceStyle: 'light',
   scheme: IS_DEV ? 'com.natanaelvich.fleetdev' : 'com.natanaelvich.fleet',
   splash: {
-    image: './assets/splash.png',
+    image: IS_DEV ? './assets/splash-dev.png' : './assets/splash.png',
     resizeMode: 'cover',
     backgroundColor: '#202024',
   },
@@ -25,7 +25,9 @@ export default {
   },
   android: {
     adaptiveIcon: {
-      foregroundImage: './assets/adaptive-icon.png',
+      foregroundImage: IS_DEV
+        ? './assets/adaptive-icon-dev.png'
+        : './assets/adaptive-icon.png',
       backgroundColor: '#202024',
     },
     package: IS_DEV ? 'com.natanaelvich.fleetdev' : 'com.natanaelvich.fleet',
@@ -36,7 +38,7 @@ export default {
     },
   },
   web: {
-    favicon: './assets/favicon.png',
+    favicon: IS_DEV ? './assets/favicon-dev.png' : './assets/favicon.png',
   },
   extra: {
     eas: {
