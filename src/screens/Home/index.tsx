@@ -3,7 +3,7 @@ import { Realm, useUser } from '@realm/react'
 import dayjs from 'dayjs'
 import { CloudArrowUp } from 'phosphor-react-native'
 import { useCallback, useEffect, useState } from 'react'
-import { Alert, FlatList, ViewToken } from 'react-native'
+import { Alert, FlatList, RefreshControl, ViewToken } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
 import Toast from 'react-native-toast-message'
 
@@ -183,6 +183,9 @@ export function Home() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListEmptyComponent={<Label>Nenhum registro de utilização.</Label>}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={fetchHistoric} />
+          }
         />
       </Content>
     </Container>
