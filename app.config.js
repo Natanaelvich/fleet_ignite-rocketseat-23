@@ -7,7 +7,7 @@ export default {
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'light',
-  scheme: 'com.natanaelvich.fleet',
+  scheme: IS_DEV ? 'com.natanaelvich.fleetdev' : 'com.natanaelvich.fleet',
   splash: {
     image: './assets/splash.png',
     resizeMode: 'cover',
