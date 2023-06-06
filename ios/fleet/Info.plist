@@ -21,12 +21,6 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to use your location</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to use your location</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to use your location</string>
     <array>
       <dict>
         <key>CFBundleURLSchemes</key>
@@ -35,6 +29,12 @@
         </array>
       </dict>
     </array>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
