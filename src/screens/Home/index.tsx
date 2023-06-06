@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Realm, useUser } from '@realm/react'
 import dayjs from 'dayjs'
 import { CloudArrowUp } from 'phosphor-react-native'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, FlatList, RefreshControl, ViewToken } from 'react-native'
 import { useSharedValue } from 'react-native-reanimated'
 import Toast from 'react-native-toast-message'
@@ -28,7 +28,17 @@ export function Home() {
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
   const [percetageToSync, setPercentageToSync] = useState<string | null>(null)
 
-  const viewableItems = useSharedValue<ViewToken[]>([])
+  const viewableItemsSharedValue = useSharedValue<ViewToken[]>([])
+
+  const onViewableItemsChanged = useCallback(
+    (viewableItems: { changed: ViewToken[] }) => {
+      console.log(viewableItems)
+      viewableItemsSharedValue.value = viewableItems.changed
+    },
+    [viewableItemsSharedValue],
+  )
+
+  const viewabilityConfigCallbackPairs = useRef([{ onViewableItemsChanged }])
 
   const historic = useQuery(Historic)
   const realm = useRealm()
@@ -174,12 +184,13 @@ export function Home() {
             <HistoricCard
               data={item}
               onPress={() => handleHistoricDetails(item.id)}
-              viewableItems={viewableItems}
+              viewableItems={viewableItemsSharedValue}
             />
           )}
-          onViewableItemsChanged={(info) => {
-            viewableItems.value = info.viewableItems
-          }}
+          // @ts-ignore
+          viewabilityConfigCallbackPairs={
+            viewabilityConfigCallbackPairs.current
+          }
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 100 }}
           ListEmptyComponent={<Label>Nenhum registro de utilização.</Label>}

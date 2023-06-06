@@ -25,17 +25,16 @@ export function HistoricCard({ data, viewableItems, ...rest }: Props) {
   const { COLORS } = useTheme()
 
   const rStyle = useAnimatedStyle(() => {
-    const isViewable = viewableItems.value.find((item) => item.key === data.id)
+    const isVisible = Boolean(
+      viewableItems.value
+        .filter((item) => item.isViewable)
+        .find((item) => item.item.id === data.id),
+    )
 
     return {
-      opacity: isViewable ? withTiming(1) : withTiming(0),
-      transform: [
-        {
-          translateX: withTiming(isViewable ? 0 : 100),
-        },
-      ],
+      opacity: withTiming(isVisible ? 1 : 0, { duration: 500 }),
     }
-  })
+  }, [viewableItems])
 
   return (
     <Container activeOpacity={0.7} {...rest} style={rStyle}>
