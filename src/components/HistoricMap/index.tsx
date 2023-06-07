@@ -1,8 +1,14 @@
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import { Platform } from 'react-native'
+import MapView, { PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps'
 
 import * as S from './styles'
 
-const HistoricMap = () => {
+type HistoricMapProps = {
+  latitude: number
+  longitude: number
+}
+
+const HistoricMap = ({ latitude, longitude }: HistoricMapProps) => {
   return (
     <S.Container>
       <MapView
@@ -10,7 +16,15 @@ const HistoricMap = () => {
           width: '100%',
           height: '100%',
         }}
-        provider={PROVIDER_GOOGLE}
+        provider={
+          Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+        }
+        initialRegion={{
+          latitude,
+          longitude,
+          latitudeDelta: 0.008,
+          longitudeDelta: 0.008,
+        }}
       />
     </S.Container>
   )
