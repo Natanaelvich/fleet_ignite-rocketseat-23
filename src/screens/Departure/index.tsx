@@ -1,12 +1,13 @@
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '@realm/react'
 import * as Location from 'expo-location'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Alert, TextInput, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Button } from '../../components/Button'
 import { Header } from '../../components/Header'
+import HistoricMap from '../../components/HistoricMap'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
@@ -24,6 +25,23 @@ export function Departure() {
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
+  const [location, setLocation] = useState<Location.LocationObject | null>(null)
+
+  useEffect(() => {
+    ;(async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permissão negada',
+          'Para utilizar o aplicativo é necessário permitir o acesso a localização.',
+        )
+        return
+      }
+
+      const location = await Location.getCurrentPositionAsync({})
+      setLocation(location)
+    })()
+  }, [])
 
   async function handleDepartureRegister() {
     try {
@@ -42,19 +60,6 @@ export function Departure() {
           'Por favor, informe a finalidade da utilização do veículo',
         )
       }
-
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert(
-          'Erro',
-          'Não foi possível obter a localização do dispositivo.',
-        )
-        return
-      }
-
-      const location = await Location.getCurrentPositionAsync({})
-
-      console.log(location)
 
       setIsResgistering(false)
 
@@ -86,6 +91,13 @@ export function Departure() {
       <KeyboardAwareScrollView extraHeight={24} enableOnAndroid>
         <View>
           <Content>
+            {location && (
+              <HistoricMap
+                latitude={location.coords.latitude}
+                longitude={location.coords.longitude}
+              />
+            )}
+
             <LicensePlateInput
               ref={licensePlateRef}
               label="Placa do veículo"
