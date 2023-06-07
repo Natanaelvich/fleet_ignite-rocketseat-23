@@ -3,19 +3,6 @@
     "version": ">= 3.10.0"
   },
   "build": {
-    "development": {
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleDevelopmentDebug"
-      },
-      "ios": {
-        "buildConfiguration": "Debug",
-        "resourceClass": "m-medium"
-      },
-      "env": {
-        "APP_VARIANT": "development"
-      }
-    },
     "preview": {
       "distribution": "internal",
       "ios": {
@@ -25,9 +12,6 @@
     "production": {
       "ios": {
         "resourceClass": "m-medium"
-      },
-      "android": {
-        "gradleCommand": ":app:bundleProductionRelease"
       }
     },
     "staging": {
