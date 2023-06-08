@@ -38,14 +38,16 @@ export function Departure() {
         return
       }
 
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-        distanceInterval: 1,
-        mayShowUserSettingsDialog: true,
-        timeInterval: 1000,
-      })
-
-      setLocation(location)
+      await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval: 1000,
+          distanceInterval: 1,
+        },
+        (location) => {
+          setLocation(location)
+        },
+      )
     })()
   }, [])
 
@@ -97,12 +99,10 @@ export function Departure() {
       <KeyboardAwareScrollView extraHeight={24} enableOnAndroid>
         <View>
           <Content>
-            {location && (
-              <HistoricMap
-                latitude={location.coords.latitude}
-                longitude={location.coords.longitude}
-              />
-            )}
+            <HistoricMap
+              latitude={location?.coords.latitude}
+              longitude={location?.coords.longitude}
+            />
 
             <LicensePlateInput
               ref={licensePlateRef}
