@@ -38,7 +38,13 @@ export function Departure() {
         return
       }
 
-      const location = await Location.getCurrentPositionAsync({})
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+        distanceInterval: 1,
+        mayShowUserSettingsDialog: true,
+        timeInterval: 1000,
+      })
+
       setLocation(location)
     })()
   }, [])
