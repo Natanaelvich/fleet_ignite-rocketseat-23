@@ -1,11 +1,15 @@
 import { Platform } from 'react-native'
-import MapView, { PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from 'react-native-maps'
 
 import * as S from './styles'
 
 type HistoricMapProps = {
-  latitude: number
-  longitude: number
+  latitude?: number
+  longitude?: number
 }
 
 const HistoricMap = ({ latitude, longitude }: HistoricMapProps) => {
@@ -19,13 +23,29 @@ const HistoricMap = ({ latitude, longitude }: HistoricMapProps) => {
         provider={
           Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
         }
-        initialRegion={{
-          latitude,
-          longitude,
-          latitudeDelta: 0.008,
-          longitudeDelta: 0.008,
-        }}
-      />
+        region={
+          latitude && longitude
+            ? {
+                latitude,
+                longitude,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+              }
+            : undefined
+        }
+        showsUserLocation
+        showsMyLocationButton
+        loadingEnabled
+      >
+        {latitude && longitude && (
+          <Marker
+            coordinate={{
+              latitude,
+              longitude,
+            }}
+          />
+        )}
+      </MapView>
     </S.Container>
   )
 }
