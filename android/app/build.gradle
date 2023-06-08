@@ -107,6 +107,7 @@ def reactNativeArchitectures() {
     def value = project.getProperties().get("reactNativeArchitectures")
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
+def GOOGLE_MAPS_API_KEY_ANDROID = System.getenv("GOOGLE_MAPS_API_KEY_ANDROID") ?: ""
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -120,6 +121,9 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
+        manifestPlaceholders = [
+            'GOOGLE_MAPS_API_KEY_ANDROID': GOOGLE_MAPS_API_KEY_ANDROID
+        ]
     }
 
     splits {
