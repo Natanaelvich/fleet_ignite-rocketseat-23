@@ -4,16 +4,10 @@ import { Realm } from '@realm/react'
 type GenerateProps = {
   user_id: string
   description: string
-  coordinates: {
-    initial: {
-      latitude: number
-      longitude: number
-    }
-    final?: {
-      latitude: number
-      longitude: number
-    }
-  }
+  initial_latitude: number
+  initial_longitude: number
+  final_latitude: number
+  final_longitude: number
   license_plate: string
 }
 
@@ -23,17 +17,10 @@ export class Historic extends Realm.Object<Historic> {
   license_plate!: string
   description!: string
   status!: string
-  coordinates!: {
-    initial: {
-      latitude: number
-      longitude: number
-    }
-    final?: {
-      latitude: number
-      longitude: number
-    }
-  }
-
+  initial_latitude!: number
+  initial_longitude!: number
+  final_latitude!: number
+  final_longitude!: number
   created_at!: Date
   updated_at!: Date
 
@@ -41,14 +28,20 @@ export class Historic extends Realm.Object<Historic> {
     user_id,
     description,
     license_plate,
-    coordinates,
+    initial_latitude,
+    initial_longitude,
+    final_latitude,
+    final_longitude,
   }: GenerateProps) {
     return {
       _id: new Realm.BSON.UUID(),
       user_id,
       description,
       license_plate,
-      coordinates,
+      initial_latitude,
+      initial_longitude,
+      final_latitude,
+      final_longitude,
       status: 'departure',
       created_at: new Date(),
       updated_at: new Date(),
@@ -67,26 +60,10 @@ export class Historic extends Realm.Object<Historic> {
       },
       license_plate: 'string',
       description: 'string',
-      coordinates: {
-        type: 'object',
-        properties: {
-          initial: {
-            type: 'object',
-            properties: {
-              latitude: 'double',
-              longitude: 'double',
-            },
-          },
-          final: {
-            type: 'object',
-            optional: true,
-            properties: {
-              latitude: 'double',
-              longitude: 'double',
-            },
-          },
-        },
-      },
+      initial_latitude: 'double',
+      initial_longitude: 'double',
+      final_latitude: 'double',
+      final_longitude: 'double',
       status: 'string',
       created_at: 'date',
       updated_at: 'date',
