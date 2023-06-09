@@ -78,6 +78,17 @@ export function Departure() {
             user_id: user!.id,
             license_plate: licensePlate,
             description,
+            coordinates: {
+              initial: {
+                latitude: location!.coords.latitude,
+                longitude: location!.coords.longitude,
+              },
+
+              final: {
+                latitude: location!.coords.latitude,
+                longitude: location!.coords.longitude,
+              },
+            },
           }),
         )
       })
