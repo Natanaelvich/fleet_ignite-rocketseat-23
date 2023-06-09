@@ -27,6 +27,7 @@ type RouteParamProps = {
 
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
+  const [location, setLocation] = useState<Location.LocationObject | null>(null)
 
   const route = useRoute()
   const { id } = route.params as RouteParamProps
@@ -61,22 +62,19 @@ export function Arrival() {
         )
       }
 
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert(
-          'Erro',
-          'Não foi possível obter a localização do dispositivo.',
-        )
-        return
-      }
-
-      const location = await Location.getCurrentPositionAsync({})
-
-      console.log(location)
-
       realm.write(() => {
         historic.status = 'arrival'
         historic.updated_at = new Date()
+        historic.coordinates = {
+          initial: {
+            latitude: historic.coordinates.initial.latitude,
+            longitude: historic.coordinates.initial.longitude,
+          },
+          final: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+        }
       })
 
       Alert.alert('Chegada', 'Chegada registrada com sucesso.')
@@ -91,6 +89,30 @@ export function Arrival() {
 
     setDataNotSynced(historic!.updated_at.getTime() > lastSync)
   }, [historic])
+
+  useEffect(() => {
+    ;(async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync()
+      if (status !== 'granted') {
+        Alert.alert(
+          'Permissão negada',
+          'Para utilizar o aplicativo é necessário permitir o acesso a localização.',
+        )
+        return
+      }
+
+      await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval: 1000,
+          distanceInterval: 1,
+        },
+        (location) => {
+          setLocation(location)
+        },
+      )
+    })()
+  }, [])
 
   return (
     <Container>
