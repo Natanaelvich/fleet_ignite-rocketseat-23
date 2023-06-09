@@ -9,7 +9,7 @@ type GenerateProps = {
       latitude: number
       longitude: number
     }
-    final: {
+    final?: {
       latitude: number
       longitude: number
     }
@@ -28,7 +28,7 @@ export class Historic extends Realm.Object<Historic> {
       latitude: number
       longitude: number
     }
-    final: {
+    final?: {
       latitude: number
       longitude: number
     }
@@ -79,6 +79,7 @@ export class Historic extends Realm.Object<Historic> {
           },
           final: {
             type: 'object',
+            optional: true,
             properties: {
               latitude: 'double',
               longitude: 'double',
