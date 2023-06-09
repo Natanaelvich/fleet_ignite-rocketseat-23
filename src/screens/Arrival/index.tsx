@@ -8,6 +8,7 @@ import { BSON } from 'realm'
 import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
+import HistoricMap from '../../components/HistoricMap'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
@@ -65,16 +66,12 @@ export function Arrival() {
       realm.write(() => {
         historic.status = 'arrival'
         historic.updated_at = new Date()
-        historic.coordinates = {
-          initial: {
-            latitude: historic.coordinates.initial.latitude,
-            longitude: historic.coordinates.initial.longitude,
-          },
-          final: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          },
-        }
+        historic.initial_latitude =
+          historic.initial_latitude ?? location?.coords.latitude ?? 0
+        historic.initial_longitude =
+          historic.initial_longitude ?? location?.coords.longitude ?? 0
+        historic.final_latitude = location?.coords.latitude ?? 0
+        historic.final_longitude = location?.coords.longitude ?? 0
       })
 
       Alert.alert('Chegada', 'Chegada registrada com sucesso.')
@@ -118,6 +115,11 @@ export function Arrival() {
     <Container>
       <Header title={title} />
       <Content>
+        <HistoricMap
+          latitude={historic?.initial_latitude}
+          longitude={historic?.initial_longitude}
+        />
+
         <Label>Placa do veículo</Label>
 
         <LicensePlate>{historic?.license_plate}</LicensePlate>
