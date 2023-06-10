@@ -15,6 +15,13 @@ import { Historic } from '../../libs/realm/schemas/Historic'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { Container, Content } from './styles'
 
+type LocationObject = {
+  coords: {
+    latitude: number
+    longitude: number
+  }
+}
+
 export function Departure() {
   const { goBack } = useNavigation()
   const realm = useRealm()
@@ -25,7 +32,7 @@ export function Departure() {
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
-  const [location, setLocation] = useState<Location.LocationObject | null>(null)
+  const [location, setLocation] = useState<LocationObject>()
 
   useEffect(() => {
     ;(async () => {
@@ -38,16 +45,10 @@ export function Departure() {
         return
       }
 
-      await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        (location) => {
-          setLocation(location)
-        },
-      )
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      })
+      setLocation(currentLocation)
     })()
   }, [])
 
@@ -96,6 +97,15 @@ export function Departure() {
     }
   }
 
+  const handlePressMap = (latitude: number, longitude: number) => {
+    setLocation({
+      coords: {
+        latitude,
+        longitude,
+      },
+    })
+  }
+
   return (
     <Container>
       <Header title="Saída" />
@@ -106,6 +116,7 @@ export function Departure() {
             <HistoricMap
               latitude={location?.coords.latitude}
               longitude={location?.coords.longitude}
+              onChange={handlePressMap}
             />
 
             <LicensePlateInput

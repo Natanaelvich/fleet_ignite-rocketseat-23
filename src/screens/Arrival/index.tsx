@@ -26,9 +26,16 @@ type RouteParamProps = {
   id: string
 }
 
+type LocationObject = {
+  coords: {
+    latitude: number
+    longitude: number
+  }
+}
+
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
-  const [location, setLocation] = useState<Location.LocationObject | null>(null)
+  const [location, setLocation] = useState<LocationObject>()
 
   const route = useRoute()
   const { id } = route.params as RouteParamProps
@@ -98,26 +105,30 @@ export function Arrival() {
         return
       }
 
-      await Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 1000,
-          distanceInterval: 1,
-        },
-        (location) => {
-          setLocation(location)
-        },
-      )
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      })
+      setLocation(currentLocation)
     })()
   }, [])
+
+  const handlePressMap = (latitude: number, longitude: number) => {
+    setLocation({
+      coords: {
+        latitude,
+        longitude,
+      },
+    })
+  }
 
   return (
     <Container>
       <Header title={title} />
       <Content>
         <HistoricMap
-          latitude={historic?.initial_latitude}
-          longitude={historic?.initial_longitude}
+          latitude={location?.coords.latitude}
+          longitude={location?.coords.longitude}
+          onChange={handlePressMap}
         />
 
         <Label>Placa do veículo</Label>
