@@ -10,9 +10,10 @@ import * as S from './styles'
 type HistoricMapProps = {
   latitude?: number
   longitude?: number
+  onChange: (latitude: number, longitude: number) => void
 }
 
-const HistoricMap = ({ latitude, longitude }: HistoricMapProps) => {
+const HistoricMap = ({ latitude, longitude, onChange }: HistoricMapProps) => {
   return (
     <S.Container>
       <MapView
@@ -33,9 +34,13 @@ const HistoricMap = ({ latitude, longitude }: HistoricMapProps) => {
               }
             : undefined
         }
-        showsUserLocation
-        showsMyLocationButton
         loadingEnabled
+        onPress={({ nativeEvent }) => {
+          onChange(
+            nativeEvent.coordinate.latitude,
+            nativeEvent.coordinate.longitude,
+          )
+        }}
       >
         {latitude && longitude && (
           <Marker
