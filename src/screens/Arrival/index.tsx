@@ -9,6 +9,7 @@ import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
 import HistoricMap from '../../components/HistoricMap'
+import HistoricMapDirections from '../../components/HistoricMapDirections'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
@@ -125,11 +126,24 @@ export function Arrival() {
     <Container>
       <Header title={title} />
       <Content>
-        <HistoricMap
-          latitude={location?.coords.latitude}
-          longitude={location?.coords.longitude}
-          onChange={handlePressMap}
-        />
+        {historic?.status === 'departure' ? (
+          <HistoricMap
+            latitude={location?.coords.latitude}
+            longitude={location?.coords.longitude}
+            onChange={handlePressMap}
+          />
+        ) : (
+          <HistoricMapDirections
+            origin={{
+              latitude: historic?.initial_latitude ?? 0,
+              longitude: historic?.initial_longitude ?? 0,
+            }}
+            destination={{
+              latitude: historic?.final_latitude ?? 0,
+              longitude: historic?.final_longitude ?? 0,
+            }}
+          />
+        )}
 
         <Label>Placa do veículo</Label>
 
