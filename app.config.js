@@ -39,5 +39,4 @@ export default {
       projectId: 'c4400ff3-56a2-482f-b56f-7e6e0be37ad3',
     },
   },
-  plugins: ['./expoPlugins/react-native-maps-ios-fix'],
 }
