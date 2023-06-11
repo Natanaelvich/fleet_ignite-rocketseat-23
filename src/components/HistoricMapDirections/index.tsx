@@ -1,5 +1,6 @@
 import { GOOGLE_MAPS_DIRECTION_API_KEY } from '@env'
 import { useEffect, useRef, useState } from 'react'
+import { Platform } from 'react-native'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
 
@@ -33,6 +34,19 @@ const HistoricMapDirections = ({
           bottom: 30,
         },
       })
+
+      // ios fix center position
+      if (Platform.OS === 'ios') {
+        mapRef.current?.setCamera({
+          center: {
+            latitude: (origin.latitude + destination.latitude) / 2,
+            longitude: (origin.longitude + destination.longitude) / 2,
+          },
+          pitch: 0,
+          heading: 0,
+          zoom: 15,
+        })
+      }
     }
   }, [destination, mapReady, origin])
 
