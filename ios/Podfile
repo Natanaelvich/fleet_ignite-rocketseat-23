@@ -39,10 +39,10 @@ elsif podfile_properties.key?('ios.flipper') then
 end
 
 target 'fleet' do
-# @generated begin react-native-maps ios fix - expo prebuild (DO NOT MODIFY) sync-dcd1376418934eb015a1490f3b50cb0e32bcd473
-  pod 'Google-Maps-iOS-Utils', :git => 'https://github.com/googlemaps/google-maps-ios-utils.git', :branch => 'main' 
-# @generated end react-native-maps ios fix
-  pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
+  pod 'Google-Maps-iOS-Utils', :git => 'https://github.com/Simon-TechForm/google-maps-ios-utils.git', :branch => 'feat/support-apple-silicon'
+
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
 
   use_expo_modules!
   config = use_native_modules!
