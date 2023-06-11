@@ -3,13 +3,13 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import <GoogleMaps/GoogleMaps.h>
-#import "ReactNativeConfig.h"
+#import "RNCConfig.h"
     
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
- [GMSServices provideAPIKey:[ReactNativeConfig envFor:@"GOOGLE_MAPS_API_KEY_IOS"]];
+ [GMSServices provideAPIKey:[RNCConfig envFor:@"GOOGLE_MAPS_API_KEY_IOS"]];
 
   self.moduleName = @"main";
 
