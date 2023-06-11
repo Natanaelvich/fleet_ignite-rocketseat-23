@@ -2,11 +2,15 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
-
+#import <GoogleMaps/GoogleMaps.h>
+#import "ReactNativeConfig.h"
+    
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+ [GMSServices provideAPIKey:[ReactNativeConfig envFor:@"GOOGLE_MAPS_API_KEY_IOS"]];
+
   self.moduleName = @"main";
 
   // You can add your custom initial props in the dictionary below.
