@@ -1,19 +1,22 @@
 import { useNavigation } from '@react-navigation/native'
 import { useUser } from '@realm/react'
 import * as Location from 'expo-location'
+import { CarSimple } from 'phosphor-react-native'
 import { useEffect, useRef, useState } from 'react'
 import { Alert, TextInput, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Button } from '../../components/Button'
 import { Header } from '../../components/Header'
-import HistoricMap from '../../components/HistoricMap'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
+import { Loading } from '../../components/Loading'
+import { LocationInfo } from '../../components/LocationInfo'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
+import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
-import { Container, Content } from './styles'
+import { Container, Content, Message } from './styles'
 
 type LocationObject = {
   coords: {
@@ -32,25 +35,65 @@ export function Departure() {
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
-  const [location, setLocation] = useState<LocationObject>()
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true)
+  const [currentAddress, setCurrentAddress] = useState<string | null>(null)
+  const [location, setLocation] = useState<LocationObject | null>(null)
+
+  const [locationForegroundPermission, requestLocationForegroundPermission] =
+    Location.useForegroundPermissions()
 
   useEffect(() => {
-    ;(async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert(
-          'Permissão negada',
-          'Para utilizar o aplicativo é necessário permitir o acesso a localização.',
-        )
-        return
-      }
+    requestLocationForegroundPermission()
+  }, [requestLocationForegroundPermission])
 
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      })
-      setLocation(currentLocation)
-    })()
-  }, [])
+  useEffect(() => {
+    if (!locationForegroundPermission?.granted) {
+      return
+    }
+
+    let subscription: Location.LocationSubscription
+
+    Location.watchPositionAsync(
+      {
+        accuracy: Location.LocationAccuracy.High,
+        timeInterval: 1000,
+      },
+      (location) => {
+        setLocation(location)
+
+        getAddressLocation(location.coords)
+          .then((address) => {
+            if (address) {
+              setCurrentAddress(address)
+            }
+          })
+          .finally(() => setIsLoadingLocation(false))
+      },
+    ).then((response) => (subscription = response))
+
+    return () => {
+      if (subscription) {
+        subscription.remove()
+      }
+    }
+  }, [locationForegroundPermission?.granted])
+
+  if (!locationForegroundPermission?.granted) {
+    return (
+      <Container>
+        <Header title="Saída" />
+        <Message>
+          Você precisa permitir que o aplicativo tenha acesso a localização para
+          acessar essa funcionalidade. Por favor, acesse as configurações do seu
+          dispositivo para conceder a permissão ao aplicativo.
+        </Message>
+      </Container>
+    )
+  }
+
+  if (isLoadingLocation) {
+    return <Loading />
+  }
 
   async function handleDepartureRegister() {
     try {
@@ -97,15 +140,6 @@ export function Departure() {
     }
   }
 
-  const handlePressMap = (latitude: number, longitude: number) => {
-    setLocation({
-      coords: {
-        latitude,
-        longitude,
-      },
-    })
-  }
-
   return (
     <Container>
       <Header title="Saída" />
@@ -113,11 +147,13 @@ export function Departure() {
       <KeyboardAwareScrollView extraHeight={24} enableOnAndroid>
         <View>
           <Content>
-            <HistoricMap
-              latitude={location?.coords.latitude}
-              longitude={location?.coords.longitude}
-              onChange={handlePressMap}
-            />
+            {currentAddress && (
+              <LocationInfo
+                icon={CarSimple}
+                label="Localização atual"
+                description={currentAddress}
+              />
+            )}
 
             <LicensePlateInput
               ref={licensePlateRef}
