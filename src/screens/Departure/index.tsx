@@ -11,6 +11,7 @@ import { Header } from '../../components/Header'
 import { LicensePlateInput } from '../../components/LicensePlateInput'
 import { Loading } from '../../components/Loading'
 import { LocationInfo } from '../../components/LocationInfo'
+import { Map } from '../../components/Map'
 import { TextAreaInput } from '../../components/TextAreaInput'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
@@ -146,6 +147,7 @@ export function Departure() {
 
       <KeyboardAwareScrollView extraHeight={24} enableOnAndroid>
         <View>
+          {location && <Map coordinates={[location.coords]} />}
           <Content>
             {currentAddress && (
               <LocationInfo
