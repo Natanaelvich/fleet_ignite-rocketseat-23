@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
 import * as Location from 'expo-location'
-import { X } from 'phosphor-react-native'
+import { CarSimple, X } from 'phosphor-react-native'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import { BSON } from 'realm'
@@ -8,10 +8,12 @@ import { BSON } from 'realm'
 import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
+import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
+import { getAddressLocation } from '../../utils/getAddressLocation'
 import {
   AsyncMessage,
   Container,
@@ -20,6 +22,7 @@ import {
   Footer,
   Label,
   LicensePlate,
+  SeparatorLocationInfo,
 } from './styles'
 
 type RouteParamProps = {
@@ -36,6 +39,8 @@ type LocationObject = {
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
   const [location, setLocation] = useState<LocationObject>()
+  const [initialAdress, setInitialAdress] = useState('')
+  const [finalAdress, setFinalAdress] = useState('')
 
   const route = useRoute()
   const { id } = route.params as RouteParamProps
@@ -112,34 +117,79 @@ export function Arrival() {
     })()
   }, [])
 
+  useEffect(() => {
+    ;(async () => {
+      const initialAdress = await getAddressLocation({
+        latitude: historic?.initial_latitude ?? 0,
+        longitude: historic?.initial_longitude ?? 0,
+        accuracy: 100,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        speed: 0,
+      })
+
+      setInitialAdress(initialAdress)
+
+      const finalAdress = await getAddressLocation({
+        latitude: historic?.final_latitude ?? 0,
+        longitude: historic?.final_longitude ?? 0,
+        accuracy: 100,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        speed: 0,
+      })
+
+      setFinalAdress(finalAdress)
+    })()
+  }, [
+    historic?.final_latitude,
+    historic?.final_longitude,
+    historic?.initial_latitude,
+    historic?.initial_longitude,
+  ])
+
   return (
     <Container>
       <Header title={title} />
+      {historic?.status === 'departure' ? (
+        <Map
+          coordinates={[
+            {
+              latitude: location?.coords.latitude ?? 0,
+              longitude: location?.coords.longitude ?? 0,
+            },
+          ]}
+        />
+      ) : (
+        <Map
+          coordinates={[
+            {
+              latitude: historic?.initial_latitude ?? 0,
+              longitude: historic?.initial_longitude ?? 0,
+            },
+            {
+              latitude: historic?.final_latitude ?? 0,
+              longitude: historic?.final_longitude ?? 0,
+            },
+          ]}
+        />
+      )}
       <Content>
-        {historic?.status === 'departure' ? (
-          <Map
-            coordinates={[
-              {
-                latitude: location?.coords.latitude ?? 0,
-                longitude: location?.coords.longitude ?? 0,
-              },
-            ]}
-          />
-        ) : (
-          <Map
-            coordinates={[
-              {
-                latitude: historic?.initial_latitude ?? 0,
-                longitude: historic?.initial_longitude ?? 0,
-              },
-              {
-                latitude: historic?.final_latitude ?? 0,
-                longitude: historic?.final_longitude ?? 0,
-              },
-            ]}
-          />
-        )}
+        <LocationInfo
+          icon={CarSimple}
+          label="Localização da saída"
+          description={initialAdress}
+        />
 
+        <SeparatorLocationInfo />
+
+        <LocationInfo
+          icon={CarSimple}
+          label="Localização da chegada"
+          description={finalAdress}
+        />
         <Label>Placa do veículo</Label>
 
         <LicensePlate>{historic?.license_plate}</LicensePlate>
