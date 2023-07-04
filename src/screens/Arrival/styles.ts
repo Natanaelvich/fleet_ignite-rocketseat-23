@@ -50,3 +50,10 @@ export const AsyncMessage = styled.Text`
   flex: 1;
   margin: 32px;
 `
+
+export const SeparatorLocationInfo = styled.View`
+  width: 1px;
+  height: 63px;
+  background: ${({ theme }) => theme.COLORS.GRAY_400};
+  margin: 0 24px;
+`
