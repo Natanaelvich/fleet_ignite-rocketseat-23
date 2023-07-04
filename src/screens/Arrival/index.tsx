@@ -10,6 +10,7 @@ import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
 import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
+import { stopLocationBackground } from '../../libs/location-background'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
@@ -85,6 +86,8 @@ export function Arrival() {
         historic.final_latitude = location?.coords.latitude ?? 0
         historic.final_longitude = location?.coords.longitude ?? 0
       })
+
+      stopLocationBackground()
 
       Alert.alert('Chegada', 'Chegada registrada com sucesso.')
       goBack()
