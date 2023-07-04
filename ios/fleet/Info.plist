@@ -26,15 +26,10 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.natanaelvich.fleet</string>
+          <string>com.natanaelvich.fleet</string>
         </array>
       </dict>
     </array>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Permissão para acessar a localização do dispositivo</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Permissão para acessar a localização do dispositivo</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Permissão para acessar a localização do dispositivo</string>
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
@@ -52,6 +47,17 @@
         </dict>
       </dict>
     </dict>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Permissão para acessar a localização do dispositivo</string>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>location</string>
+      <string>fetch</string>
+    </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
