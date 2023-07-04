@@ -13,6 +13,10 @@ import { Loading } from '../../components/Loading'
 import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
 import { TextAreaInput } from '../../components/TextAreaInput'
+import {
+  requestPermissionsLocationBackground,
+  startLocationBackground,
+} from '../../libs/location-background'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getAddressLocation } from '../../utils/getAddressLocation'
@@ -40,15 +44,22 @@ export function Departure() {
   const [currentAddress, setCurrentAddress] = useState<string | null>(null)
   const [location, setLocation] = useState<LocationObject | null>(null)
 
-  const [locationForegroundPermission, requestLocationForegroundPermission] =
-    Location.useForegroundPermissions()
+  const [locationBackgroundPermission, requestLocationBackgroundPermission] =
+    useState<boolean>()
+  const [gettingPermission, setGettingPermission] = useState<boolean>()
 
   useEffect(() => {
-    requestLocationForegroundPermission()
-  }, [requestLocationForegroundPermission])
+    ;(async () => {
+      setGettingPermission(true)
+      const permission = await requestPermissionsLocationBackground()
+
+      requestLocationBackgroundPermission(permission)
+      setGettingPermission(false)
+    })()
+  }, [])
 
   useEffect(() => {
-    if (!locationForegroundPermission?.granted) {
+    if (!locationBackgroundPermission) {
       return
     }
 
@@ -77,9 +88,9 @@ export function Departure() {
         subscription.remove()
       }
     }
-  }, [locationForegroundPermission?.granted])
+  }, [locationBackgroundPermission])
 
-  if (!locationForegroundPermission?.granted) {
+  if (!locationBackgroundPermission) {
     return (
       <Container>
         <Header title="Saída" />
@@ -92,7 +103,7 @@ export function Departure() {
     )
   }
 
-  if (isLoadingLocation) {
+  if (isLoadingLocation || gettingPermission) {
     return <Loading />
   }
 
@@ -130,6 +141,8 @@ export function Departure() {
           }),
         )
       })
+
+      startLocationBackground()
 
       Alert.alert('Saída', 'Saída do veículo registrada com sucesso.')
 
