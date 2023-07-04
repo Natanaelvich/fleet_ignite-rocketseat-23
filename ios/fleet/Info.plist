@@ -26,7 +26,6 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.natanaelvich.fleet</string>
-          <string>com.natanaelvich.fleet</string>
         </array>
       </dict>
     </array>
