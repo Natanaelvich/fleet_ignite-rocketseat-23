@@ -18,7 +18,8 @@ import {
   startLocationBackground,
 } from '../../libs/location-background'
 import { useRealm } from '../../libs/realm'
-import { Historic } from '../../libs/realm/schemas/Historic'
+import { Historic, LocationCoords } from '../../libs/realm/schemas/Historic'
+import { storage } from '../../libs/storage/mmkv'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { Container, Content, Message } from './styles'
@@ -127,22 +128,20 @@ export function Departure() {
 
       setIsResgistering(false)
 
+      const historic = Historic.generate({
+        user_id: user!.id,
+        license_plate: licensePlate,
+        description,
+        locations: [LocationCoords.generate(location!.coords)],
+      })
+
       realm.write(() => {
-        realm.create(
-          'Historic',
-          Historic.generate({
-            user_id: user!.id,
-            license_plate: licensePlate,
-            description,
-            initial_latitude: location?.coords.latitude,
-            initial_longitude: location?.coords.longitude,
-            final_latitude: location?.coords.latitude,
-            final_longitude: location?.coords.longitude,
-          }),
-        )
+        realm.create('Historic', historic)
       })
 
       startLocationBackground()
+
+      storage.set('current_departure', historic._id.toHexString())
 
       Alert.alert('Saída', 'Saída do veículo registrada com sucesso.')
 
