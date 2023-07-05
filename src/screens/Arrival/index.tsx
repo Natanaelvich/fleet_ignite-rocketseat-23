@@ -12,7 +12,7 @@ import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
 import { stopLocationBackground } from '../../libs/location-background'
 import { useObject, useRealm } from '../../libs/realm'
-import { Historic } from '../../libs/realm/schemas/Historic'
+import { Historic, LocationCoords } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import {
@@ -79,12 +79,10 @@ export function Arrival() {
       realm.write(() => {
         historic.status = 'arrival'
         historic.updated_at = new Date()
-        historic.initial_latitude =
-          historic.initial_latitude ?? location?.coords.latitude ?? 0
-        historic.initial_longitude =
-          historic.initial_longitude ?? location?.coords.longitude ?? 0
-        historic.final_latitude = location?.coords.latitude ?? 0
-        historic.final_longitude = location?.coords.longitude ?? 0
+        historic.locations = [
+          ...historic.locations,
+          LocationCoords.generate(location?.coords),
+        ]
       })
 
       stopLocationBackground()
@@ -92,6 +90,7 @@ export function Arrival() {
       Alert.alert('Chegada', 'Chegada registrada com sucesso.')
       goBack()
     } catch (error) {
+      console.log(error)
       Alert.alert('Erro', 'Não foi possível registar a chegada do veículo.')
     }
   }
@@ -123,8 +122,8 @@ export function Arrival() {
   useEffect(() => {
     ;(async () => {
       const initialAdress = await getAddressLocation({
-        latitude: historic?.initial_latitude ?? 0,
-        longitude: historic?.initial_longitude ?? 0,
+        latitude: historic?.locations[0].latitude ?? 0,
+        longitude: historic?.locations[0].longitude ?? 0,
         accuracy: 100,
         altitude: 0,
         altitudeAccuracy: 0,
@@ -135,8 +134,10 @@ export function Arrival() {
       setInitialAdress(initialAdress)
 
       const finalAdress = await getAddressLocation({
-        latitude: historic?.final_latitude ?? 0,
-        longitude: historic?.final_longitude ?? 0,
+        latitude:
+          historic?.locations[historic?.locations.length - 1].latitude ?? 0,
+        longitude:
+          historic?.locations[historic?.locations.length - 1].longitude ?? 0,
         accuracy: 100,
         altitude: 0,
         altitudeAccuracy: 0,
@@ -146,12 +147,7 @@ export function Arrival() {
 
       setFinalAdress(finalAdress)
     })()
-  }, [
-    historic?.final_latitude,
-    historic?.final_longitude,
-    historic?.initial_latitude,
-    historic?.initial_longitude,
-  ])
+  }, [historic?.locations])
 
   return (
     <Container>
@@ -169,12 +165,16 @@ export function Arrival() {
         <Map
           coordinates={[
             {
-              latitude: historic?.initial_latitude ?? 0,
-              longitude: historic?.initial_longitude ?? 0,
+              latitude: historic?.locations[0].latitude ?? 0,
+              longitude: historic?.locations[0].longitude ?? 0,
             },
             {
-              latitude: historic?.final_latitude ?? 0,
-              longitude: historic?.final_longitude ?? 0,
+              latitude:
+                historic?.locations[historic?.locations.length - 1].latitude ??
+                0,
+              longitude:
+                historic?.locations[historic?.locations.length - 1].longitude ??
+                0,
             },
           ]}
         />
