@@ -1,14 +1,38 @@
 /* eslint-disable no-use-before-define */
 import { Realm } from '@realm/react'
 
+type LocationCoordsProps = {
+  latitude: number
+  longitude: number
+}
+
 type GenerateProps = {
   user_id: string
   description: string
-  initial_latitude: number
-  initial_longitude: number
-  final_latitude: number
-  final_longitude: number
+  locations: LocationCoordsProps[]
   license_plate: string
+}
+
+export class LocationCoords extends Realm.Object<LocationCoords> {
+  static generate({ latitude, longitude }: LocationCoordsProps) {
+    return {
+      _id: new Realm.BSON.UUID(),
+      latitude,
+      longitude,
+    }
+  }
+
+  static schema = {
+    name: 'LocationCoords',
+    primaryKey: '_id',
+
+    properties: {
+      _id: 'uuid',
+
+      latitude: 'double?',
+      longitude: 'double?',
+    },
+  }
 }
 
 export class Historic extends Realm.Object<Historic> {
@@ -17,10 +41,7 @@ export class Historic extends Realm.Object<Historic> {
   license_plate!: string
   description!: string
   status!: string
-  initial_latitude!: number
-  initial_longitude!: number
-  final_latitude!: number
-  final_longitude!: number
+  locations!: LocationCoordsProps[]
   created_at!: Date
   updated_at!: Date
 
@@ -28,20 +49,14 @@ export class Historic extends Realm.Object<Historic> {
     user_id,
     description,
     license_plate,
-    initial_latitude,
-    initial_longitude,
-    final_latitude,
-    final_longitude,
+    locations,
   }: GenerateProps) {
     return {
       _id: new Realm.BSON.UUID(),
       user_id,
       description,
       license_plate,
-      initial_latitude,
-      initial_longitude,
-      final_latitude,
-      final_longitude,
+      locations,
       status: 'departure',
       created_at: new Date(),
       updated_at: new Date(),
@@ -60,10 +75,7 @@ export class Historic extends Realm.Object<Historic> {
       },
       license_plate: 'string',
       description: 'string',
-      initial_latitude: 'double',
-      initial_longitude: 'double',
-      final_latitude: 'double',
-      final_longitude: 'double',
+      locations: 'LocationCoords[]',
       status: 'string',
       created_at: 'date',
       updated_at: 'date',
