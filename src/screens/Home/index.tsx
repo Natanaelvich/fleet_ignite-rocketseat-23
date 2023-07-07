@@ -1,21 +1,15 @@
 import { useNavigation } from '@react-navigation/native'
 import { Realm, useUser } from '@realm/react'
 import dayjs from 'dayjs'
-import { CloudArrowUp } from 'phosphor-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { Alert, FlatList, RefreshControl } from 'react-native'
-import Toast from 'react-native-toast-message'
 
 import { CarStatus } from '../../components/CarStatus'
 import { HistoricCard, HistoricCardProps } from '../../components/HistoricCard'
 import { HomeHeader } from '../../components/HomeHeader'
-import { TopMessage } from '../../components/TopMessage'
 import { useQuery, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
-import {
-  getLastAsyncTimestamp,
-  saveLastSyncTimestamp,
-} from '../../libs/storage/mmkv'
+import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
 import { Container, Content, Label, Title } from './styles'
 
 let realmConnection: Realm | null = null
@@ -27,7 +21,6 @@ export function Home() {
     [],
   )
   const [vehicleInUse, setVehicleInUse] = useState<Historic | null>(null)
-  const [percetageToSync, setPercentageToSync] = useState<string | null>(null)
 
   const historic = useQuery(Historic)
   const realm = useRealm()
@@ -88,46 +81,6 @@ export function Home() {
     }
   }, [historic])
 
-  const progressNotification = useCallback(
-    async (transferred: number, transferable: number) => {
-      const percentage = (transferred / transferable) * 100
-
-      if (percentage === 100) {
-        saveLastSyncTimestamp()
-        fetchHistoric()
-        setPercentageToSync(null)
-
-        Toast.show({
-          type: 'info',
-          text1: 'Todos os dados estão sincronizado.',
-        })
-      }
-
-      if (percentage < 100) {
-        setPercentageToSync(`${percentage.toFixed(0)}% sincronizado.`)
-      }
-    },
-    [fetchHistoric],
-  )
-
-  useEffect(() => {
-    const syncSession = realm.syncSession
-
-    if (!syncSession) {
-      return
-    }
-
-    syncSession.addProgressNotification(
-      Realm.ProgressDirection.Upload,
-      Realm.ProgressMode.ReportIndefinitely,
-      progressNotification,
-    )
-
-    return () => {
-      syncSession.removeProgressNotification(progressNotification)
-    }
-  }, [progressNotification, realm])
-
   useEffect(() => {
     fetchHistoric()
   }, [fetchHistoric])
@@ -159,10 +112,6 @@ export function Home() {
 
   return (
     <Container>
-      {percetageToSync && (
-        <TopMessage title={percetageToSync} icon={CloudArrowUp} />
-      )}
-
       <HomeHeader />
 
       <Content>
