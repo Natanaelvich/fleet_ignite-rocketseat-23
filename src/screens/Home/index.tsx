@@ -18,6 +18,8 @@ import {
 } from '../../libs/storage/mmkv'
 import { Container, Content, Label, Title } from './styles'
 
+let realmConnection: Realm | null = null
+
 export function Home() {
   const { navigate } = useNavigation()
 
@@ -29,7 +31,12 @@ export function Home() {
 
   const historic = useQuery(Historic)
   const realm = useRealm()
+
   const user = useUser()
+
+  useEffect(() => {
+    realmConnection = realm
+  }, [realm])
 
   function handleRegisterMoviment() {
     if (vehicleInUse?._id) {
@@ -185,4 +192,8 @@ export function Home() {
       </Content>
     </Container>
   )
+}
+
+export function getRealmConnection() {
+  return realmConnection
 }
