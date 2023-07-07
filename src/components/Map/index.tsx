@@ -1,5 +1,5 @@
 import { Car, FlagCheckered } from 'phosphor-react-native'
-import { useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import MapView, {
   LatLng,
   MapViewProps,
@@ -21,13 +21,24 @@ export function Map({ coordinates, ...rest }: Props) {
 
   const lastCoordinate = coordinates[coordinates.length - 1]
 
+  const fitToSuppliedMarkers = useCallback(() => {
+    mapRef.current?.fitToSuppliedMarkers(['departure', 'arrival'], {
+      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
+      animated: false,
+    })
+  }, [])
+
   async function onMapLoaded() {
     if (coordinates.length > 1) {
-      mapRef.current?.fitToSuppliedMarkers(['departure', 'arrival'], {
-        edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-      })
+      fitToSuppliedMarkers()
     }
   }
+
+  useEffect(() => {
+    if (coordinates.length > 1) {
+      fitToSuppliedMarkers()
+    }
+  }, [coordinates, fitToSuppliedMarkers])
 
   return (
     <MapView
