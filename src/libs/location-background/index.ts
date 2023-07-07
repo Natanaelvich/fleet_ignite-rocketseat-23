@@ -1,5 +1,9 @@
 import * as Location from 'expo-location'
 import * as TaskManager from 'expo-task-manager'
+import Realm, { BSON } from 'realm'
+
+import { Historic, LocationCoords } from '../realm/schemas/Historic'
+import { storage } from '../storage/mmkv'
 
 const LOCATION_TASK_NAME = 'background-location-task'
 
@@ -40,8 +44,33 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
     return
   }
   if (data) {
-    const { locations } = data as any
+    const { locations } = data as { locations: Location.LocationObject[] }
+
+    const currentDepartureActivity = storage.getString('current_departure')
+    console.log(currentDepartureActivity)
     console.log(locations)
+
+    if (currentDepartureActivity) {
+      const realm = new Realm({ schema: [Historic, LocationCoords] })
+      const historic = realm
+        .objects(Historic)
+        .filtered('_id = $0', new BSON.UUID(currentDepartureActivity))[0]
+
+      if (historic) {
+        const coords = locations.map((location) => {
+          return LocationCoords.generate({
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          })
+        })
+
+        realm.write(() => {
+          historic.locations.push(...coords)
+        })
+
+        realm.close()
+      }
+    }
     // do something with the locations captured in the background
   }
 })
