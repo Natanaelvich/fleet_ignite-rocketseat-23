@@ -40,15 +40,12 @@ export const stopLocationBackground = async () => {
 
 TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
   if (error) {
-    // Error occurred - check `error.message` for more details.
     return
   }
   if (data) {
     const { locations } = data as { locations: Location.LocationObject[] }
 
     const currentDepartureActivity = storage.getString('current_departure')
-    console.log(currentDepartureActivity)
-    console.log(locations)
 
     if (currentDepartureActivity) {
       const realm = new Realm({ schema: [Historic, LocationCoords] })
@@ -71,6 +68,5 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
         realm.close()
       }
     }
-    // do something with the locations captured in the background
   }
 })
