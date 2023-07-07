@@ -1,14 +1,18 @@
+import { Realm } from '@realm/react'
 import { LocationObject } from 'expo-location'
-import Realm, { BSON } from 'realm'
+import { BSON } from 'realm'
 
 import { Historic, LocationCoords } from '../libs/realm/schemas/Historic'
 import { storage } from '../libs/storage/mmkv'
 
-export function addLocationsCurrentDerpature(locations: LocationObject[]) {
+export async function addLocationsCurrentDerpature(
+  locations: LocationObject[],
+) {
   const currentDepartureActivity = storage.getString('current_departure')
 
   if (currentDepartureActivity) {
-    const realm = new Realm({ schema: [Historic, LocationCoords] })
+    const realm = await Realm.open({ schema: [Historic, LocationCoords] })
+
     const historic = realm
       .objects(Historic)
       .filtered('_id = $0', new BSON.UUID(currentDepartureActivity))[0]
@@ -22,7 +26,7 @@ export function addLocationsCurrentDerpature(locations: LocationObject[]) {
       })
 
       realm.write(() => {
-        historic.locations.push(...coords)
+        historic.locations = [...historic.locations, ...coords]
       })
 
       realm.close()
