@@ -1,5 +1,4 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
-import * as Location from 'expo-location'
 import { CarSimple, X } from 'phosphor-react-native'
 import { useEffect, useState } from 'react'
 import { Alert } from 'react-native'
@@ -12,7 +11,7 @@ import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
 import { stopLocationBackground } from '../../libs/location-background'
 import { useObject, useRealm } from '../../libs/realm'
-import { Historic, LocationCoords } from '../../libs/realm/schemas/Historic'
+import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import {
@@ -30,16 +29,8 @@ type RouteParamProps = {
   id: string
 }
 
-type LocationObject = {
-  coords: {
-    latitude: number
-    longitude: number
-  }
-}
-
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
-  const [location, setLocation] = useState<LocationObject>()
   const [initialAdress, setInitialAdress] = useState('')
   const [finalAdress, setFinalAdress] = useState('')
 
@@ -79,10 +70,6 @@ export function Arrival() {
       realm.write(() => {
         historic.status = 'arrival'
         historic.updated_at = new Date()
-        historic.locations = [
-          ...historic.locations,
-          LocationCoords.generate(location?.coords),
-        ]
       })
 
       stopLocationBackground()
@@ -100,24 +87,6 @@ export function Arrival() {
 
     setDataNotSynced(historic!.updated_at.getTime() > lastSync)
   }, [historic])
-
-  useEffect(() => {
-    ;(async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync()
-      if (status !== 'granted') {
-        Alert.alert(
-          'Permissão negada',
-          'Para utilizar o aplicativo é necessário permitir o acesso a localização.',
-        )
-        return
-      }
-
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      })
-      setLocation(currentLocation)
-    })()
-  }, [])
 
   useEffect(() => {
     ;(async () => {

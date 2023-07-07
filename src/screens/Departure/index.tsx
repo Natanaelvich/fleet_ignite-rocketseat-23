@@ -18,7 +18,7 @@ import {
   startLocationBackground,
 } from '../../libs/location-background'
 import { useRealm } from '../../libs/realm'
-import { Historic, LocationCoords } from '../../libs/realm/schemas/Historic'
+import { Historic } from '../../libs/realm/schemas/Historic'
 import { storage } from '../../libs/storage/mmkv'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
@@ -132,7 +132,7 @@ export function Departure() {
         user_id: user!.id,
         license_plate: licensePlate,
         description,
-        locations: [LocationCoords.generate(location!.coords)],
+        locations: [],
       })
 
       realm.write(() => {
