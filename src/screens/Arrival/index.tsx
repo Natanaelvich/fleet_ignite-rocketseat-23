@@ -152,33 +152,13 @@ export function Arrival() {
   return (
     <Container>
       <Header title={title} />
-      {historic?.status === 'departure' ? (
-        <Map
-          coordinates={[
-            {
-              latitude: location?.coords.latitude ?? 0,
-              longitude: location?.coords.longitude ?? 0,
-            },
-          ]}
-        />
-      ) : (
-        <Map
-          coordinates={[
-            {
-              latitude: historic?.locations[0].latitude ?? 0,
-              longitude: historic?.locations[0].longitude ?? 0,
-            },
-            {
-              latitude:
-                historic?.locations[historic?.locations.length - 1].latitude ??
-                0,
-              longitude:
-                historic?.locations[historic?.locations.length - 1].longitude ??
-                0,
-            },
-          ]}
-        />
-      )}
+      <Map
+        coordinates={historic?.locations.map((location) => ({
+          latitude: location.latitude,
+          longitude: location.longitude,
+        }))}
+      />
+
       <Content>
         <LocationInfo
           icon={CarSimple}
