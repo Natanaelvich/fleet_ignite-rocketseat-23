@@ -407,7 +407,7 @@ PODS:
     - React-Core
   - react-native-maps (1.7.1):
     - React-Core
-  - react-native-mmkv (2.8.0):
+  - react-native-mmkv (2.10.1):
     - MMKV (>= 1.2.13)
     - React-Core
   - react-native-netinfo (9.3.10):
@@ -528,7 +528,7 @@ PODS:
     - React-jsi (= 0.72.3)
     - React-logger (= 0.72.3)
     - React-perflogger (= 0.72.3)
-  - RealmJS (11.9.0):
+  - RealmJS (11.10.1):
     - React
   - RNReanimated (3.3.0):
     - DoubleConversion
@@ -849,7 +849,7 @@ SPEC CHECKSUMS:
   react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
   react-native-google-maps: dd12cdd86b8e3fedbbb671676aedaa2f656e2ccd
   react-native-maps: 667f9b975549c6fa9b1631bf859440f68ebd3b8f
-  react-native-mmkv: 7da5e18e55c04a9af9a7e0ab9792a1e8d33765a1
+  react-native-mmkv: dea675cf9697ad35940f1687e98e133e1358ef9f
   react-native-netinfo: ccbe1085dffd16592791d550189772e13bf479e2
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
   React-NativeModulesApple: c57f3efe0df288a6532b726ad2d0322a9bf38472
@@ -869,7 +869,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 837c1bebd2f84572db17698cd702ceaf585b0d9a
   React-utils: bcb57da67eec2711f8b353f6e3d33bd8e4b2efa3
   ReactCommon: 3ccb8fb14e6b3277e38c73b0ff5e4a1b8db017a9
-  RealmJS: 64ae0907c1f21ce8e74bd480a8503032b19804fd
+  RealmJS: 8deebf00c84f499c654bc585583c54f55b586751
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315
