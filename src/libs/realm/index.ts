@@ -8,7 +8,7 @@ const realmAccessBehavior: OpenRealmBehaviorConfiguration = {
   type: OpenRealmBehaviorType.OpenImmediately,
 }
 
-export const syncConfig: any = {
+export const syncConfig: Partial<Realm.SyncConfiguration> = {
   flexible: true,
   newRealmFileBehavior: realmAccessBehavior,
   existingRealmFileBehavior: realmAccessBehavior,
