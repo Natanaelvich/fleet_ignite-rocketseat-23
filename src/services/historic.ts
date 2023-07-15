@@ -1,7 +1,7 @@
 import { LocationObject } from 'expo-location'
 import { BSON } from 'realm'
 
-import { Historic, LocationCoords } from '../libs/realm/schemas/Historic'
+import { Historic } from '../libs/realm/schemas/Historic'
 import { storage } from '../libs/storage/mmkv'
 import { getRealmConnection } from '../screens/Home'
 
@@ -27,15 +27,15 @@ export async function addLocationsCurrentDerpature(
       currentDepartureActivity,
     })
     if (historic) {
-      const coords = locations.map((location) => {
-        return LocationCoords.generate({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        })
-      })
-
       realm.write(() => {
-        historic.locations = [...historic.locations, ...coords]
+        historic.coords.push(
+          ...locations.map((location) => ({
+            _id: new BSON.ObjectID(),
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            timestamp: location.timestamp,
+          })),
+        )
       })
     }
   }
