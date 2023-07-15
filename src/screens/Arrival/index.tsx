@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { CarSimple, X } from 'phosphor-react-native'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import { BSON } from 'realm'
 
@@ -9,10 +9,12 @@ import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
 import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
+import { getStorageLocations } from '../../libs/asyncStorage/locationStorage'
 import { stopLocationBackground } from '../../libs/location-background'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
+import { stopLocationTask } from '../../tasks/backgroundLocationTask'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import {
   AsyncMessage,
@@ -72,7 +74,7 @@ export function Arrival() {
         historic.updated_at = new Date()
       })
 
-      stopLocationBackground()
+      await stopLocationTask()
 
       Alert.alert('Chegada', 'Chegada registrada com sucesso.')
       goBack()
@@ -82,11 +84,17 @@ export function Arrival() {
     }
   }
 
-  useEffect(() => {
+  const getLocationsInfo = useCallback(async () => {
     const lastSync = getLastAsyncTimestamp()
+    const updatedAt = historic!.updated_at.getTime()
+    setDataNotSynced(updatedAt > lastSync)
 
-    setDataNotSynced(historic!.updated_at.getTime() > lastSync)
+    const locationsStorage = await getStorageLocations()
   }, [historic])
+
+  useEffect(() => {
+    getLocationsInfo()
+  }, [getLocationsInfo])
 
   useEffect(() => {
     ;(async () => {
