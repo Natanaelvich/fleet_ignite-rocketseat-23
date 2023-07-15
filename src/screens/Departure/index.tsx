@@ -20,6 +20,7 @@ import {
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { storage } from '../../libs/storage/mmkv'
+import { startLocationTask } from '../../tasks/backgroundLocationTask'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
 import { Container, Content, Message } from './styles'
@@ -126,7 +127,9 @@ export function Departure() {
         )
       }
 
-      setIsResgistering(false)
+      setIsResgistering(true)
+
+      await startLocationTask()
 
       const historic = Historic.generate({
         user_id: user!.id,
