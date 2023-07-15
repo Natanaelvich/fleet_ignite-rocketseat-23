@@ -13,16 +13,14 @@ import { Loading } from '../../components/Loading'
 import { LocationInfo } from '../../components/LocationInfo'
 import { Map } from '../../components/Map'
 import { TextAreaInput } from '../../components/TextAreaInput'
-import {
-  requestPermissionsLocationBackground,
-  startLocationBackground,
-} from '../../libs/location-background'
+import { requestPermissionsLocationBackground } from '../../libs/location-background'
 import { useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { storage } from '../../libs/storage/mmkv'
 import { startLocationTask } from '../../tasks/backgroundLocationTask'
 import { getAddressLocation } from '../../utils/getAddressLocation'
 import { licensePlateValidate } from '../../utils/licensePlateValidate'
+import { openSettings } from '../../utils/openSettings'
 import { Container, Content, Message } from './styles'
 
 type LocationObject = {
@@ -42,13 +40,13 @@ export function Departure() {
   const [description, setDescription] = useState('')
   const [licensePlate, setLicensePlate] = useState('')
   const [isRegistering, setIsResgistering] = useState(false)
-  const [isLoadingLocation, setIsLoadingLocation] = useState(true)
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [currentAddress, setCurrentAddress] = useState<string | null>(null)
   const [location, setLocation] = useState<LocationObject | null>(null)
 
   const [locationBackgroundPermission, requestLocationBackgroundPermission] =
     useState<boolean>()
-  const [gettingPermission, setGettingPermission] = useState<boolean>()
+  const [gettingPermission, setGettingPermission] = useState<boolean>(true)
 
   useEffect(() => {
     ;(async () => {
@@ -74,7 +72,6 @@ export function Departure() {
       },
       (location) => {
         setLocation(location)
-
         getAddressLocation(location.coords)
           .then((address) => {
             if (address) {
@@ -101,6 +98,7 @@ export function Departure() {
           acessar essa funcionalidade. Por favor, acesse as configurações do seu
           dispositivo para conceder a permissão ao aplicativo.
         </Message>
+        <Button title="Abrir configurações" onPress={openSettings} />
       </Container>
     )
   }
@@ -149,15 +147,12 @@ export function Departure() {
         realm.create('Historic', historic)
       })
 
-      startLocationBackground()
-
       storage.set('current_departure', historic._id.toHexString())
 
       Alert.alert('Saída', 'Saída do veículo registrada com sucesso.')
 
       goBack()
     } catch (error) {
-      console.log(error)
       Alert.alert('Erro', 'Não possível registrar a saída do veículo.')
       setIsResgistering(false)
     }
