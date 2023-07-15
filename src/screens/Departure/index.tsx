@@ -127,15 +127,22 @@ export function Departure() {
         )
       }
 
+      if (!user) {
+        return Alert.alert(
+          'Erro',
+          'Não foi possível identificar o usuário logado.',
+        )
+      }
+
       setIsResgistering(true)
 
       await startLocationTask()
 
       const historic = Historic.generate({
-        user_id: user!.id,
+        user_id: user.id,
         license_plate: licensePlate,
         description,
-        locations: [],
+        coords: [],
       })
 
       realm.write(() => {
