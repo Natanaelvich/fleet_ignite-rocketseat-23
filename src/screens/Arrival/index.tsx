@@ -1,16 +1,19 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
+import dayjs from 'dayjs'
 import { CarSimple, X } from 'phosphor-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { Alert } from 'react-native'
+import { LatLng } from 'react-native-maps'
 import { BSON } from 'realm'
 
 import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
-import { LocationInfo } from '../../components/LocationInfo'
+import { Loading } from '../../components/Loading'
+import { LocationInfo, LocationInfoProps } from '../../components/LocationInfo'
+import { Locations } from '../../components/Locations'
 import { Map } from '../../components/Map'
 import { getStorageLocations } from '../../libs/asyncStorage/locationStorage'
-import { stopLocationBackground } from '../../libs/location-background'
 import { useObject, useRealm } from '../../libs/realm'
 import { Historic } from '../../libs/realm/schemas/Historic'
 import { getLastAsyncTimestamp } from '../../libs/storage/mmkv'
@@ -35,6 +38,12 @@ export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
   const [initialAdress, setInitialAdress] = useState('')
   const [finalAdress, setFinalAdress] = useState('')
+  const [coordinates, setCoordinates] = useState<LatLng[]>([])
+  const [departure, setDeparture] = useState<LocationInfoProps>(
+    {} as LocationInfoProps,
+  )
+  const [arrival, setArrival] = useState<LocationInfoProps | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const route = useRoute()
   const { id } = route.params as RouteParamProps
@@ -52,12 +61,12 @@ export function Arrival() {
     ])
   }
 
-  function removeVehicleUsage() {
+  async function removeVehicleUsage() {
     realm.write(() => {
       realm.delete(historic)
     })
 
-    goBack()
+    await stopLocationTask()
   }
 
   async function handleArrivalRegister() {
@@ -69,9 +78,12 @@ export function Arrival() {
         )
       }
 
+      const coords = await getStorageLocations()
+
       realm.write(() => {
         historic.status = 'arrival'
         historic.updated_at = new Date()
+        historic.coords.push(...coords)
       })
 
       await stopLocationTask()
@@ -85,11 +97,45 @@ export function Arrival() {
   }
 
   const getLocationsInfo = useCallback(async () => {
-    const lastSync = getLastAsyncTimestamp()
-    const updatedAt = historic!.updated_at.getTime()
+    if (!historic) {
+      return
+    }
+
+    const lastSync = await getLastAsyncTimestamp()
+    const updatedAt = historic.updated_at.getTime()
     setDataNotSynced(updatedAt > lastSync)
 
-    const locationsStorage = await getStorageLocations()
+    if (historic?.status === 'departure') {
+      const locationsStorage = await getStorageLocations()
+      setCoordinates(locationsStorage)
+    } else {
+      setCoordinates(historic?.coords ?? [])
+    }
+
+    if (historic?.coords[0]) {
+      const departureStreetName = await getAddressLocation(historic?.coords[0])
+
+      setDeparture({
+        label: `Saíndo em ${departureStreetName ?? ''}`,
+        description: dayjs(new Date(historic?.coords[0].timestamp)).format(
+          'DD/MM/YYYY [às] HH:mm',
+        ),
+      })
+    }
+
+    if (historic?.status === 'arrival') {
+      const lastLocation = historic.coords[historic.coords.length - 1]
+      const arrivalStreetName = await getAddressLocation(lastLocation)
+
+      setArrival({
+        label: `Chegando em ${arrivalStreetName ?? ''}`,
+        description: dayjs(new Date(lastLocation.timestamp)).format(
+          'DD/MM/YYYY [às] HH:mm',
+        ),
+      })
+    }
+
+    setIsLoading(false)
   }, [historic])
 
   useEffect(() => {
@@ -99,44 +145,32 @@ export function Arrival() {
   useEffect(() => {
     ;(async () => {
       const initialAdress = await getAddressLocation({
-        latitude: historic?.locations[0].latitude ?? 0,
-        longitude: historic?.locations[0].longitude ?? 0,
-        accuracy: 100,
-        altitude: 0,
-        altitudeAccuracy: 0,
-        heading: 0,
-        speed: 0,
+        latitude: historic?.coords[0].latitude ?? 0,
+        longitude: historic?.coords[0].longitude ?? 0,
       })
 
       setInitialAdress(initialAdress)
 
       const finalAdress = await getAddressLocation({
-        latitude:
-          historic?.locations[historic?.locations.length - 1].latitude ?? 0,
-        longitude:
-          historic?.locations[historic?.locations.length - 1].longitude ?? 0,
-        accuracy: 100,
-        altitude: 0,
-        altitudeAccuracy: 0,
-        heading: 0,
-        speed: 0,
+        latitude: historic?.coords[historic?.coords.length - 1].latitude ?? 0,
+        longitude: historic?.coords[historic?.coords.length - 1].longitude ?? 0,
       })
 
       setFinalAdress(finalAdress)
     })()
-  }, [historic?.locations])
+  }, [historic?.coords])
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <Container>
       <Header title={title} />
-      <Map
-        coordinates={historic?.locations.map((location) => ({
-          latitude: location.latitude,
-          longitude: location.longitude,
-        }))}
-      />
+      {coordinates.length > 0 && <Map coordinates={coordinates} />}
 
       <Content>
+        <Locations departure={departure} arrival={arrival} />
         <LocationInfo
           icon={CarSimple}
           label="Localização da saída"
