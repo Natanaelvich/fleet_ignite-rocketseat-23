@@ -1,38 +1,13 @@
 /* eslint-disable no-use-before-define */
 import { Realm } from '@realm/react'
 
-type LocationCoordsProps = {
-  latitude: number
-  longitude: number
-}
+import { CoordsSchemaProps } from './Coords'
 
 type GenerateProps = {
   user_id: string
   description: string
-  locations: LocationCoordsProps[]
   license_plate: string
-}
-
-export class LocationCoords extends Realm.Object<LocationCoords> {
-  static generate({ latitude, longitude }: LocationCoordsProps) {
-    return {
-      _id: new Realm.BSON.UUID(),
-      latitude,
-      longitude,
-    }
-  }
-
-  static schema = {
-    name: 'LocationCoords',
-    primaryKey: '_id',
-
-    properties: {
-      _id: 'uuid',
-
-      latitude: 'double?',
-      longitude: 'double?',
-    },
-  }
+  coords: CoordsSchemaProps[]
 }
 
 export class Historic extends Realm.Object<Historic> {
@@ -41,7 +16,7 @@ export class Historic extends Realm.Object<Historic> {
   license_plate!: string
   description!: string
   status!: string
-  locations!: LocationCoordsProps[]
+  coords!: CoordsSchemaProps[]
   created_at!: Date
   updated_at!: Date
 
@@ -49,14 +24,14 @@ export class Historic extends Realm.Object<Historic> {
     user_id,
     description,
     license_plate,
-    locations,
+    coords,
   }: GenerateProps) {
     return {
       _id: new Realm.BSON.UUID(),
       user_id,
       description,
       license_plate,
-      locations,
+      coords,
       status: 'departure',
       created_at: new Date(),
       updated_at: new Date(),
@@ -75,7 +50,10 @@ export class Historic extends Realm.Object<Historic> {
       },
       license_plate: 'string',
       description: 'string',
-      locations: 'LocationCoords[]',
+      coords: {
+        type: 'list',
+        objectType: 'Coords',
+      },
       status: 'string',
       created_at: 'date',
       updated_at: 'date',
