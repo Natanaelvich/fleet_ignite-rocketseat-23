@@ -68,7 +68,7 @@ export function Home() {
         return {
           id: item._id.toString(),
           licensePlate: item.license_plate,
-          isSync: lastSync > item.updated_at!.getTime(),
+          isSync: lastSync > item.updated_at.getTime(),
           created: dayjs(item.created_at).format(
             '[Saída em] DD/MM/YYYY [às] HH:mm',
           ),
@@ -99,14 +99,18 @@ export function Home() {
   }, [fetchVehicleInUse, realm])
 
   useEffect(() => {
+    if (!user) {
+      return
+    }
+
     realm.subscriptions.update((mutableSubs, realm) => {
       const historicByUserQuery = realm
         .objects('Historic')
-        .filtered(`user_id = '${user!.id}'`)
+        .filtered(`user_id = '${user.id}'`)
 
-      const locationCoords = realm.objects('LocationCoords')
+      const coords = realm.objects('Coords')
       mutableSubs.add(historicByUserQuery, { name: 'hostoric_by_user' })
-      mutableSubs.add(locationCoords, { name: 'location_coords' })
+      mutableSubs.add(coords, { name: 'coords' })
     })
   }, [realm, user])
 
