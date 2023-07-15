@@ -1,0 +1,7 @@
+appId: com.natanaelvich.fleet
+---
+- launchApp:
+    appId: "com.natanaelvich.fleet"
+    clearState: false
+    permissions:
+      location: unset
