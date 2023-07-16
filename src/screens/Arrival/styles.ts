@@ -5,10 +5,12 @@ export const Container = styled.View`
   background-color: ${({ theme }) => theme.COLORS.GRAY_800};
 `
 
-export const Content = styled.View`
-  flex-grow: 1;
-  padding: 32px;
-`
+export const Content = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    flexGrow: 1,
+    padding: 32,
+  },
+})``
 
 export const Label = styled.Text`
   color: ${({ theme }) => theme.COLORS.GRAY_300};

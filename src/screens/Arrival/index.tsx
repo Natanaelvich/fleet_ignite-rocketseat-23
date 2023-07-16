@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native'
 import dayjs from 'dayjs'
-import { CarSimple, X } from 'phosphor-react-native'
+import { X } from 'phosphor-react-native'
 import { useCallback, useEffect, useState } from 'react'
 import { Alert } from 'react-native'
 import { LatLng } from 'react-native-maps'
@@ -10,7 +10,7 @@ import { Button } from '../../components/Button'
 import { ButtonIcon } from '../../components/ButtonIcon'
 import { Header } from '../../components/Header'
 import { Loading } from '../../components/Loading'
-import { LocationInfo, LocationInfoProps } from '../../components/LocationInfo'
+import { LocationInfoProps } from '../../components/LocationInfo'
 import { Locations } from '../../components/Locations'
 import { Map } from '../../components/Map'
 import { getStorageLocations } from '../../libs/asyncStorage/locationStorage'
@@ -27,7 +27,6 @@ import {
   Footer,
   Label,
   LicensePlate,
-  SeparatorLocationInfo,
 } from './styles'
 
 type RouteParamProps = {
@@ -36,8 +35,6 @@ type RouteParamProps = {
 
 export function Arrival() {
   const [dataNotSynced, setDataNotSynced] = useState(false)
-  const [initialAdress, setInitialAdress] = useState('')
-  const [finalAdress, setFinalAdress] = useState('')
   const [coordinates, setCoordinates] = useState<LatLng[]>([])
   const [departure, setDeparture] = useState<LocationInfoProps>(
     {} as LocationInfoProps,
@@ -101,7 +98,7 @@ export function Arrival() {
       return
     }
 
-    const lastSync = await getLastAsyncTimestamp()
+    const lastSync = getLastAsyncTimestamp()
     const updatedAt = historic.updated_at.getTime()
     setDataNotSynced(updatedAt > lastSync)
 
@@ -139,26 +136,12 @@ export function Arrival() {
   }, [historic])
 
   useEffect(() => {
-    getLocationsInfo()
+    const interval = setInterval(() => {
+      getLocationsInfo()
+    }, 1000)
+
+    return () => clearInterval(interval)
   }, [getLocationsInfo])
-
-  useEffect(() => {
-    ;(async () => {
-      const initialAdress = await getAddressLocation({
-        latitude: historic?.coords[0].latitude ?? 0,
-        longitude: historic?.coords[0].longitude ?? 0,
-      })
-
-      setInitialAdress(initialAdress)
-
-      const finalAdress = await getAddressLocation({
-        latitude: historic?.coords[historic?.coords.length - 1].latitude ?? 0,
-        longitude: historic?.coords[historic?.coords.length - 1].longitude ?? 0,
-      })
-
-      setFinalAdress(finalAdress)
-    })()
-  }, [historic?.coords])
 
   if (isLoading) {
     return <Loading />
@@ -171,19 +154,7 @@ export function Arrival() {
 
       <Content>
         <Locations departure={departure} arrival={arrival} />
-        <LocationInfo
-          icon={CarSimple}
-          label="Localização da saída"
-          description={initialAdress}
-        />
 
-        <SeparatorLocationInfo />
-
-        <LocationInfo
-          icon={CarSimple}
-          label="Localização da chegada"
-          description={finalAdress}
-        />
         <Label>Placa do veículo</Label>
 
         <LicensePlate>{historic?.license_plate}</LicensePlate>
