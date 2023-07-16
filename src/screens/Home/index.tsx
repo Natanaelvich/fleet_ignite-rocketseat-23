@@ -108,9 +108,7 @@ export function Home() {
         .objects('Historic')
         .filtered(`user_id = '${user.id}'`)
 
-      const coords = realm.objects('Coords')
       mutableSubs.add(historicByUserQuery, { name: 'hostoric_by_user' })
-      mutableSubs.add(coords, { name: 'coords' })
     })
   }, [realm, user])
 
