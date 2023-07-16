@@ -136,11 +136,7 @@ export function Arrival() {
   }, [historic])
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      getLocationsInfo()
-    }, 1000)
-
-    return () => clearInterval(interval)
+    getLocationsInfo()
   }, [getLocationsInfo])
 
   if (isLoading) {
