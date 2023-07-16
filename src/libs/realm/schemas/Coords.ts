@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Realm } from '@realm/react'
 
 export type CoordsSchemaProps = {
