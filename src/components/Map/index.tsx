@@ -21,24 +21,24 @@ export function Map({ coordinates, ...rest }: Props) {
 
   const lastCoordinate = coordinates[coordinates.length - 1]
 
-  const fitToSuppliedMarkers = useCallback(() => {
-    mapRef.current?.fitToSuppliedMarkers(['departure', 'arrival'], {
-      edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
-      animated: false,
-    })
-  }, [])
-
-  async function onMapLoaded() {
-    if (coordinates.length > 1) {
-      fitToSuppliedMarkers()
-    }
-  }
+  const fitToSuppliedLocations = useCallback(() => {
+    mapRef.current?.fitToCoordinates(
+      coordinates.map((c) => ({
+        latitude: c.latitude,
+        longitude: c.longitude,
+      })),
+      {
+        edgePadding: { top: 30, right: 30, bottom: 30, left: 30 },
+        animated: false,
+      },
+    )
+  }, [coordinates])
 
   useEffect(() => {
-    if (coordinates.length > 1) {
-      fitToSuppliedMarkers()
+    if (coordinates.length > 1 && mapRef.current) {
+      fitToSuppliedLocations()
     }
-  }, [coordinates, fitToSuppliedMarkers])
+  }, [coordinates, fitToSuppliedLocations])
 
   return (
     <MapView
@@ -51,7 +51,6 @@ export function Map({ coordinates, ...rest }: Props) {
         latitudeDelta: 0.005,
         longitudeDelta: 0.005,
       }}
-      onMapReady={onMapLoaded}
       {...rest}
     >
       <Marker identifier="departure" coordinate={coordinates[0]}>
