@@ -133,6 +133,7 @@ export function Home() {
 
       if (percentage === 100) {
         saveLastSyncTimestamp()
+        fetchHistoric()
         setPercentageToSync(null)
       }
 
