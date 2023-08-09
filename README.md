@@ -1,5 +1,7 @@
 # Fleet
 
+![Layout 3 (1)](https://github.com/Natanaelvich/fleet_ignite-rocketseat-23/assets/52014318/e8e8db5d-ba8e-4a8d-8d25-3f2527b12238)
+
 Fleet is a mobile application that allows users to track their vehicle's history departures and arrivals. Created with React Native and Expo.
 
 <!-- emoji screenshot here  -->
